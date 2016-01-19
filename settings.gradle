@@ -1,0 +1,4 @@
+rootProject.name = 'tingo'
+include 'server'
+findProject(':server')?.name = 'tingo-server'
+

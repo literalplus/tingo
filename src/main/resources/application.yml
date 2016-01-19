@@ -1,0 +1,8 @@
+# Spring property source for the Tingo application, providing default configuration
+# Note that properties are considered in this order:
+# http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-external-config
+
+spring:
+  profiles:
+    active:
+     - dev
