@@ -5,3 +5,9 @@
 
 # Enable more verbose logging on core loggers
 #debug: true
+spring:
+  devtools:
+    restart:
+      additional-paths:
+        - webapp/src/main/resources/**
+        - server/src/main/resources/**
