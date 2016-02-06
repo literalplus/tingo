@@ -1,0 +1,54 @@
+<!doctype html>
+<html ng-app="tingo" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Greetings from Tingo!</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8"/>
+    <script src="webjars/angularjs/1.4.9/angular.min.js"></script>
+    <script src="webjars/angular-ui-bootstrap/1.1.1-1/ui-bootstrap.min.js"></script>
+    <!--suppress HtmlUnknownTarget -->
+    <script src="js/GreetingController.js"></script>
+    <!--suppress HtmlUnknownTarget -->
+    <script src="webjars/bootswatch-superhero/3.3.5+4/js/bootstrap.min.js"></script>
+    <!--<link rel="stylesheet" href="webjars/bootstrap/3.3.6/css/bootstrap.min.css" />-->
+    <!--suppress HtmlUnknownTarget -->
+    <link rel="stylesheet" href="webjars/bootswatch-superhero/3.3.5+4/css/bootstrap.min.css"/>
+    <!--suppress HtmlUnknownTarget -->
+    <link rel="stylesheet" href="css/tingo.css"/>
+</head>
+
+<body>
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a href="/" class="navbar-brand">Tingo</a>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar-main">
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                <li><a href="/teachers">Lehrer</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="more" aria-expanded="false">
+                        Mehr <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="more">
+                        <li>Space</li>
+                        <li>Something</li>
+                        <li>Reference</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container main-container">
+    <p th:text="'Hello, yes, ' + ${name} + '!'"></p>
+    <div ng-controller="GreetingController as gc">
+        <p>Tingo says: <em>{{gc.greeting}}</em></p>
+    </div>
+    <a href="#" class="btn btn-primary">Primary</a>
+</div>
+
+</body>
+</html>
