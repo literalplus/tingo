@@ -1,0 +1,8 @@
+# Default database/Spring configuration for Tingo.
+# Copy to application.yml in the application's working directory.
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost/tingo
+    username: tingo
+    password: my-very-secure-password

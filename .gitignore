@@ -39,3 +39,6 @@ hs_err_pid*
 # IntelliJ
 /out/
 
+# Ignore database configuration
+/application.yml
+/application-*.yml
