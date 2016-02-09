@@ -15,3 +15,7 @@ flyway:
   baseline-on-migrate: true
   encoding: UTF-8
 
+security:
+  user:
+    password: password
+# TODO: Dynamic credentials D:

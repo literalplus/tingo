@@ -4,51 +4,76 @@
     <title>Greetings from Tingo!</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta charset="utf-8"/>
-    <script src="webjars/angularjs/1.4.9/angular.min.js"></script>
-    <script src="webjars/angular-ui-bootstrap/1.1.1-1/ui-bootstrap.min.js"></script>
     <!--suppress HtmlUnknownTarget -->
-    <script src="js/GreetingController.js"></script>
-    <!--suppress HtmlUnknownTarget -->
-    <script src="webjars/bootswatch-superhero/3.3.5+4/js/bootstrap.min.js"></script>
-    <!--<link rel="stylesheet" href="webjars/bootstrap/3.3.6/css/bootstrap.min.css" />-->
-    <!--suppress HtmlUnknownTarget -->
-    <link rel="stylesheet" href="webjars/bootswatch-superhero/3.3.5+4/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="webjars/bootswatch-paper/3.3.5+4/css/bootstrap.min.css"/>
     <!--suppress HtmlUnknownTarget -->
     <link rel="stylesheet" href="css/tingo.css"/>
 </head>
 
 <body>
-<nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <a href="/" class="navbar-brand">Tingo</a>
-        </div>
-        <div class="navbar-collapse collapse" id="navbar-main">
-            <ul class="nav navbar-nav">
-                <li><a href="/">Home</a></li>
-                <li><a href="/teachers">Lehrer</a></li>
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="more" aria-expanded="false">
-                        Mehr <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="more">
-                        <li>Space</li>
-                        <li>Something</li>
-                        <li>Reference</li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<div ng-controller="AuthController as auth">
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#tingo-navbar-collapse" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="#/" class="navbar-brand">Tingo</a>
+            </div>
 
-<div class="container main-container">
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="tingo-navbar-collapse">
+                <ul class="nav navbar-nav" ng-cloak="">
+                    <li class="active"><a href="#/">Home</a></li>
+                    <li><a href="#/teachers">Lehrer</a></li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                           id="tingo-more-dropdown"
+                           aria-haspopup="true" aria-expanded="false">
+                            Mehr <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>Space</li>
+                            <li>Something</li>
+                            <li>Reference</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <p class="navbar-text pull-right" ng-hide="authenticated">
+                    Hello, it's me? <a href="#/login">Login</a>
+                </p>
+
+                <p class="navbar-text pull-right" ng-show="authenticated">
+                    o/ {{username}} <a href="" ng-click="auth.logout()">Logout</a>
+                </p>
+            </div> <!-- /.navbar-collapse -->
+        </div> <!-- /.container-fluid -->
+    </nav>
+
+    <div class="container main-container" ng-view="">
+
+    </div>
+
     <p th:text="'Hello, yes, ' + ${name} + '!'"></p>
-    <div ng-controller="GreetingController as gc">
-        <p>Tingo says: <em>{{gc.greeting}}</em></p>
-    </div>
-    <a href="#" class="btn btn-primary">Primary</a>
-</div>
 
+    <noscript>
+        Entschuldige bitte meine Inkompetenz, aber diese Seite ben&ouml;tigt JavaScript. Bitte aktiviere JavaScript.
+    </noscript>
+
+    <!-- Load scripts last for load time or something -->
+    <script src="webjars/angularjs/1.4.9/angular.min.js"></script>
+    <script src="webjars/angularjs/1.4.9/angular-route.min.js"></script>
+    <script src="webjars/jquery/2.1.4/jquery.min.js"></script>
+    <script src="webjars/angular-ui-bootstrap/1.1.1-1/ui-bootstrap.min.js"></script>
+    <!--suppress HtmlUnknownTarget -->
+    <script src="js/tingo.js"></script>
+
+</div> <!-- /div[ng-controller=navCtrl] -->
 </body>
 </html>
