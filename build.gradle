@@ -32,6 +32,7 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf'
     compile group: 'mysql', name: 'mysql-connector-java'
+    compile group: 'net.sf.dozer', name: 'dozer', version: '5.4.0'
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
     compile group: 'org.webjars', name: 'jquery', version: '2.1.4'
     compile group: 'org.webjars', name: 'angular-ui-bootstrap', version: '1.1.1-1' //TODO: look at angular-ui-router

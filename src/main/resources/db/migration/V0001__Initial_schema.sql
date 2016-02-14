@@ -3,11 +3,12 @@
 -- For a MySQL/MariaDB server.
 
 -- tingo_teacher table
+-- Note: There's no difference in space usage between using VARCHAR(4) and VARCHAR(255)
 CREATE TABLE IF NOT EXISTS tingo_teacher
 (
   id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  abbr VARCHAR(4) NOT NULL,
-  name VARCHAR(127) NOT NULL
+  abbr VARCHAR(255) NOT NULL,
+  name VARCHAR(255) NOT NULL
 );
 CREATE UNIQUE INDEX tingo_teacher_abbr_uindex ON tingo_teacher (abbr);
 
