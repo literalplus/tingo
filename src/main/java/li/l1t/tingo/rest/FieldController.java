@@ -31,7 +31,7 @@ public class FieldController {
         this.teacherService = teacherService;
     }
 
-    @RequestMapping("/api/field/by/teacher/{teacherId}/")
+    @RequestMapping("/api/field/by/teacher/{teacherId}")
     public List<FieldDto> byTeacherId(@PathVariable("teacherId") int teacherId) {
         Teacher teacher = teacherService.getById(teacherId);
         if(teacher == null) {
