@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
  * @since 2016-02-14
  */
 @Repository
-public interface TeacherRepository extends CrudRepository<Teacher, Long> {
+public interface TeacherRepository extends CrudRepository<Teacher, Integer> {
 
     Teacher findByAbbreviation(String abbreviation);
 

@@ -28,6 +28,10 @@ public class TeacherService {
         return teacherRepository.findAll();
     }
 
+    public Teacher getById(int id) {
+        return teacherRepository.findOne(id);
+    }
+
     public TeacherDto toDto(Teacher entity) {
         return dozerBeanMapper.map(entity, TeacherDto.class);
     }
