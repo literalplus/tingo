@@ -76,7 +76,7 @@ tingoApp.config(function($stateProvider, $urlRouterProvider, $urlMatcherFactoryP
     $stateProvider
         .state('home', {
             url: '/',
-            templateUrl: 'pages/home.html',
+            templateUrl: 'partials/home.html',
             controller: 'HomeController',
             controllerAs: 'homeCtrl',
             data: {
@@ -85,7 +85,7 @@ tingoApp.config(function($stateProvider, $urlRouterProvider, $urlMatcherFactoryP
         })
         .state('login', {
             url: '/login?errRedirect',
-            templateUrl: 'pages/login.html',
+            templateUrl: 'partials/login.html',
             controller: 'LoginController',
             controllerAs: 'loginCtrl',
             data: {
@@ -102,7 +102,7 @@ tingoApp.config(function($stateProvider, $urlRouterProvider, $urlMatcherFactoryP
         })
         .state('teachers.detail', {
             url: '/detail',
-            templateUrl: 'pages/teacher-detail.html',
+            templateUrl: 'partials/teacher-detail.html',
             controller: 'TeacherDetailController',
             controllerAs: 'detailCtrl'
         });
