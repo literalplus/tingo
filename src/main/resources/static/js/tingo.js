@@ -60,7 +60,6 @@ var AuthController = function($rootScope, $http, $location) {
 };
 
 var LoginController = function ($stateParams) {
-    console.info($stateParams);
     this.errRedirect = $stateParams.errRedirect;
 };
 
@@ -118,8 +117,6 @@ tingoApp.run(function($rootScope, $state) {
         console.info(to);
         if((!to.data || !to.data.no_auth) && !$rootScope.authenticated) {
             e.preventDefault();
-            console.info("not logged in!");
-
             $state.go('login', {errRedirect: true});
         }
     })
