@@ -1,3 +1,9 @@
+<div class="alert alert-info" ng-show="authenticated">
+    Du bist bereits eingeloggt! <a ui-sref="home">Zurück</a>
+</div>
+<div class="alert alert-danger" ng-show="loginCtrl.errRedirect">
+    Du musst dich zuerst einloggen!
+</div>
 <div class="alert alert-danger" ng-show="auth.error">
     Du konntest nicht eingeloggt werden: <br />
     <em>{{auth.errorMessage}}</em>

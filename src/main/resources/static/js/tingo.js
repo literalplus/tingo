@@ -32,7 +32,7 @@ var AuthController = function($rootScope, $http, $location) {
           $rootScope.authenticated = false;
           callback && callback(false);
         });
-    }
+    };
 
     this.login = function() {
         authenticate(auth.credentials,
@@ -59,25 +59,73 @@ var AuthController = function($rootScope, $http, $location) {
     authenticate();
 };
 
-var tingoApp = angular.module('tingo', [ 'ngRoute' ]);
+var LoginController = function ($stateParams) {
+    console.info($stateParams);
+    this.errRedirect = $stateParams.errRedirect;
+};
 
-tingoApp.config(function($routeProvider, $httpProvider) {
-    $routeProvider.when('/', {
-        templateUrl: 'pages/home.html',
-        controller: 'HomeController',
-        controllerAs: 'homeCtrl'
-    }).when('/login', {
-        templateUrl: 'pages/login.html',
-        controller: 'LoginController',
-        controllerAs: 'loginCtrl'
-    }).otherwise('/');
+var TeacherDetailController = function($http, $stateParams) {
+
+};
+
+var tingoApp = angular.module('tingo', [ 'ui.router' ]);
+
+tingoApp.config(function($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvider, $httpProvider) {
+    $urlRouterProvider.otherwise("/");
+    $urlRouterProvider.when('/teachers', '/teachers/list');
+
+    $stateProvider
+        .state('home', {
+            url: '/',
+            templateUrl: 'pages/home.html',
+            controller: 'HomeController',
+            controllerAs: 'homeCtrl',
+            data: {
+                no_auth: true
+            }
+        })
+        .state('login', {
+            url: '/login?errRedirect',
+            templateUrl: 'pages/login.html',
+            controller: 'LoginController',
+            controllerAs: 'loginCtrl',
+            data: {
+                no_auth: true
+            }
+        })
+        .state('teachers', {
+            url: '/teachers',
+            abstract: true,
+            template: '<ui-view/>'
+        })
+        .state('teachers.list', {
+            url: '/list'
+        })
+        .state('teachers.detail', {
+            url: '/detail',
+            templateUrl: 'pages/teacher-detail.html',
+            controller: 'TeacherDetailController',
+            controllerAs: 'detailCtrl'
+        });
 
     //Prevent Spring Security from displaying auth dialog, we control authentication ourselves!
     $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 });
 
+tingoApp.run(function($rootScope, $state) {
+    $rootScope.authenticated = false;
+    $rootScope.$on('$stateChangeStart', function(e, to) {
+        console.info(to);
+        if((!to.data || !to.data.no_auth) && !$rootScope.authenticated) {
+            e.preventDefault();
+            console.info("not logged in!");
+
+            $state.go('login', {errRedirect: true});
+        }
+    })
+});
+
 tingoApp.controller('HomeController', HomeController);
-
 tingoApp.controller('AuthController', AuthController);
-
-tingoApp.controller('LoginController', function () {});
+tingoApp.controller('TeacherDetailController', TeacherDetailController);
+tingoApp.controller('LoginController', LoginController);
