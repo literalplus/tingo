@@ -4,7 +4,7 @@ var HomeController = function ($http) {
     var ctrl = this;
     this.greeting = 'nothing yet';
 
-    $http.get('http://localhost:8080/hello/World')
+    $http.get('/hello/World')
         .success(function (data) {
             ctrl.greeting = data.greeting;
         });
@@ -64,7 +64,17 @@ var LoginController = function ($stateParams) {
 };
 
 var TeacherDetailController = function($http, $stateParams) {
+    alert('todo: '+$stateParams);
+};
 
+var TeacherListController = function($http) {
+    var ctrl = this;
+    this.teachers = {};
+
+    $http.get('/api/teacher/list')
+        .success(function (data) {
+            ctrl.teachers = data;
+        });
 };
 
 var tingoApp = angular.module('tingo', [ 'ui.router' ]);
@@ -98,10 +108,13 @@ tingoApp.config(function($stateProvider, $urlRouterProvider, $urlMatcherFactoryP
             template: '<ui-view/>'
         })
         .state('teachers.list', {
-            url: '/list'
+            url: '/list',
+            templateUrl: 'partials/teacher-list.html',
+            controller: 'TeacherListController',
+            controllerAs: 'listCtrl'
         })
         .state('teachers.detail', {
-            url: '/detail',
+            url: '/detail/:id',
             templateUrl: 'partials/teacher-detail.html',
             controller: 'TeacherDetailController',
             controllerAs: 'detailCtrl'
@@ -125,4 +138,5 @@ tingoApp.run(function($rootScope, $state) {
 tingoApp.controller('HomeController', HomeController);
 tingoApp.controller('AuthController', AuthController);
 tingoApp.controller('TeacherDetailController', TeacherDetailController);
+tingoApp.controller('TeacherListController', TeacherListController);
 tingoApp.controller('LoginController', LoginController);
