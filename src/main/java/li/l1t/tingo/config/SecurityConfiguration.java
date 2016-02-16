@@ -23,7 +23,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.httpBasic()
                 .and().authorizeRequests()
-                .antMatchers("/sudo/**", "/auth/status").authenticated()
+                .antMatchers("/api/**", "/auth/status").authenticated()
                 .anyRequest().permitAll()
                 .and().csrf().csrfTokenRepository(createCsrfTokenRepository())
                 .and().addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class);
