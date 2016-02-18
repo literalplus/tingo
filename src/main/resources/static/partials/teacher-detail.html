@@ -1,0 +1,9 @@
+<h1>{{detailCtrl.teacher.name}} ({{detailCtrl.teacher.abbreviation}})</h1>
+
+<table class="table table-bordered table-responsive  table-hover">
+    <tr ng-repeat="row in detailCtrl.rows">
+        <td ng-repeat="column in row">
+            {{column.text}}
+        </td>
+    </tr>
+</table>

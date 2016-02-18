@@ -10,35 +10,35 @@ var HomeController = function ($http) {
         });
 };
 
-var AuthController = function($rootScope, $http, $location) {
+var AuthController = function ($rootScope, $http, $location) {
     var auth = this;
     this.credentials = {};
     this.error = false;
     this.errorMessage = 'Vermutlich falscher Benutzername oder falsches Passwort.';
 
-    var authenticate = function(credentials, callback) {
+    var authenticate = function (credentials, callback) {
         var headers = credentials ? {
-                authorization : "Basic " + btoa(credentials.username + ":" + credentials.password)
-            } : {}; //add headers if we were called using credentials
+            authorization: "Basic " + btoa(credentials.username + ":" + credentials.password)
+        } : {}; //add headers if we were called using credentials
 
-        $http.get('auth/status', {headers : headers}).success(function(data) {
-          if (data.name) {
-            $rootScope.authenticated = true;
-          } else {
+        $http.get('auth/status', {headers: headers}).success(function (data) {
+            if (data.name) {
+                $rootScope.authenticated = true;
+            } else {
+                $rootScope.authenticated = false;
+            }
+            callback && callback($rootScope.authenticated); //only call if we actually have a callback
+        }).error(function () {
             $rootScope.authenticated = false;
-          }
-          callback && callback($rootScope.authenticated); //only call if we actually have a callback
-        }).error(function() {
-          $rootScope.authenticated = false;
-          callback && callback(false);
+            callback && callback(false);
         });
     };
 
-    this.login = function() {
+    this.login = function () {
         authenticate(auth.credentials,
             function (authSuccess) {
                 auth.error = !authSuccess;
-                if(authSuccess) {
+                if (authSuccess) {
                     $location.path('/');
                 } else {
                     $location.path('/login');
@@ -51,7 +51,7 @@ var AuthController = function($rootScope, $http, $location) {
         $http.post('logout', {}).success(function () {
             $rootScope.authenticated = false;
             $location.path('/');
-        }).error(function(data) {
+        }).error(function (data) {
             $rootScope.authenticated = false;
         });
     };
@@ -63,11 +63,43 @@ var LoginController = function ($stateParams) {
     this.errRedirect = $stateParams.errRedirect;
 };
 
-var TeacherDetailController = function($http, $stateParams) {
-    alert('todo: '+$stateParams);
+var TeacherDetailController = function ($http, $stateParams) {
+    var ctrl = this;
+    this.teacher = {name: '...', abbreviation: '....'};
+    this.fields = {};
+    this.rows = [];
+
+    $http.get('/api/field/by/teacher/' + $stateParams.id)
+        .success(function (data) {
+            ctrl.teacher = data.teacher;
+            ctrl.fields = data;
+            var rowsCount = Math.ceil(data / 6);
+            var columnsCount = 6;
+            var possibleRows = [3,4,5,6,1];
+
+            for(var possibleRow in possibleRows) {
+                if((ctrl.fields.count % possibleRow) == 0) {
+                    rowsCount = possibleRow;
+                    columnsCount = ctrl.fields.count / rowsCount;
+                    break;
+                }
+            }
+
+            var i = 0;
+            for(var rowId = 0; rowId < rowsCount; rowId++) {
+                var row = [];
+                for(var columnId = 0; columnId < columnsCount; columnId++) {
+                    row[columnId] = ctrl.fields.fields[i];
+                    i++;
+                }
+                ctrl.rows[rowId] = row;
+            }
+
+            console.log(ctrl.fields);
+        });
 };
 
-var TeacherListController = function($http) {
+var TeacherListController = function ($http) {
     var ctrl = this;
     this.teachers = {};
 
@@ -77,9 +109,9 @@ var TeacherListController = function($http) {
         });
 };
 
-var tingoApp = angular.module('tingo', [ 'ui.router' ]);
+var tingoApp = angular.module('tingo', ['ui.router']);
 
-tingoApp.config(function($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvider, $httpProvider) {
+tingoApp.config(function ($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvider, $httpProvider) {
     $urlRouterProvider.otherwise("/");
     $urlRouterProvider.when('/teachers', '/teachers/list');
 
@@ -124,11 +156,10 @@ tingoApp.config(function($stateProvider, $urlRouterProvider, $urlMatcherFactoryP
     $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 });
 
-tingoApp.run(function($rootScope, $state) {
+tingoApp.run(function ($rootScope, $state) {
     $rootScope.authenticated = false;
-    $rootScope.$on('$stateChangeStart', function(e, to) {
-        console.info(to);
-        if((!to.data || !to.data.no_auth) && !$rootScope.authenticated) {
+    $rootScope.$on('$stateChangeStart', function (e, to) {
+        if ((!to.data || !to.data.no_auth) && !$rootScope.authenticated) {
             e.preventDefault();
             $state.go('login', {errRedirect: true});
         }

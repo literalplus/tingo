@@ -3,6 +3,7 @@ package li.l1t.tingo.rest;
 import li.l1t.tingo.exception.JsonPropagatingException;
 import li.l1t.tingo.model.Teacher;
 import li.l1t.tingo.model.dto.FieldDto;
+import li.l1t.tingo.model.dto.FieldsDto;
 import li.l1t.tingo.service.FieldService;
 import li.l1t.tingo.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,13 +33,16 @@ public class FieldController {
     }
 
     @RequestMapping("/api/field/by/teacher/{teacherId}")
-    public List<FieldDto> byTeacherId(@PathVariable("teacherId") int teacherId) {
+    public FieldsDto byTeacherId(@PathVariable("teacherId") int teacherId) {
         Teacher teacher = teacherService.getById(teacherId);
         if(teacher == null) {
-            throw new JsonPropagatingException("Unknown teacher!");
+            throw new JsonPropagatingException(new NullPointerException("Unknown teacher!"));
         }
-        return StreamSupport.stream(fieldService.getAllFieldsByTeacher(teacher).spliterator(), false)
+
+        List<FieldDto> fields = StreamSupport.stream(fieldService.getAllFieldsByTeacher(teacher).spliterator(), false)
                 .map(fieldService::toDto)
                 .collect(Collectors.toList());
+
+        return new FieldsDto(teacherService.toDto(teacher), fields);
     }
 }
