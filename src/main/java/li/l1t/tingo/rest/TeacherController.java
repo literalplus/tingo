@@ -1,8 +1,11 @@
 package li.l1t.tingo.rest;
 
+import li.l1t.tingo.exception.JsonPropagatingException;
+import li.l1t.tingo.model.Teacher;
 import li.l1t.tingo.model.dto.TeacherDto;
 import li.l1t.tingo.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,5 +34,15 @@ public class TeacherController {
         return StreamSupport.stream(teacherService.getAllTeachers().spliterator(), false)
                 .map(teacherService::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @RequestMapping("/api/teacher/by/id/{id}")
+    public Teacher singleTeacher(@PathVariable("id") int id) {
+        Teacher teacher = teacherService.getById(id);
+        if(teacher == null) {
+            throw new JsonPropagatingException(new NullPointerException("Unknown teacher!"));
+        } else {
+            return teacher;
+        }
     }
 }
