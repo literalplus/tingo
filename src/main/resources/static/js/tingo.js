@@ -10,7 +10,7 @@ var HomeController = function ($http) {
         });
 };
 
-var AuthController = function ($rootScope, $http, $location) {
+var AuthController = function ($rootScope, $http, $location, $state) {
     var auth = this;
     this.credentials = {};
     this.error = false;
@@ -39,7 +39,12 @@ var AuthController = function ($rootScope, $http, $location) {
             function (authSuccess) {
                 auth.error = !authSuccess;
                 if (authSuccess) {
-                    $location.path('/');
+                    if ($rootScope.returnto != null) {
+                        $state.go($rootScope.returnto, $rootScope.returnparams); //FIXME
+                        $rootScope.returnto = null;
+                    } else {
+                        $location.path('/');
+                    }
                 } else {
                     $location.path('/login');
                 }
@@ -73,12 +78,16 @@ var TeacherDetailController = function ($http, $stateParams) {
         .success(function (data) {
             ctrl.teacher = data.teacher;
             ctrl.fields = data;
-            var rowsCount = Math.ceil(data / 6);
-            var columnsCount = 6;
-            var possibleRows = [3,4,5,6,1];
+            var rowsCount = Math.ceil(data / 5);
+            var columnsCount = 5;
+            var possibleRows = [5, 4, 3];
 
-            for(var possibleRow in possibleRows) {
-                if((ctrl.fields.count % possibleRow) == 0) {
+            for (var j = 0; j < possibleRows.length; j++) {
+                var possibleRow = possibleRows[j];
+                console.info("aa" + possibleRow);
+                console.info(ctrl.fields.count % possibleRow);
+                if ((ctrl.fields.count % possibleRow) == 0) {
+                    console.info(possibleRow + "--pR");
                     rowsCount = possibleRow;
                     columnsCount = ctrl.fields.count / rowsCount;
                     break;
@@ -86,16 +95,18 @@ var TeacherDetailController = function ($http, $stateParams) {
             }
 
             var i = 0;
-            for(var rowId = 0; rowId < rowsCount; rowId++) {
+            for (var rowId = 0; rowId < rowsCount; rowId++) {
                 var row = [];
-                for(var columnId = 0; columnId < columnsCount; columnId++) {
+                for (var columnId = 0; columnId < columnsCount; columnId++) {
                     row[columnId] = ctrl.fields.fields[i];
                     i++;
                 }
+                console.info(row);
                 ctrl.rows[rowId] = row;
             }
-
-            console.log(ctrl.fields);
+            console.info(rowsCount + " -- " + columnsCount);
+            console.info(data);
+            console.info(ctrl.rows);
         });
 };
 
@@ -126,7 +137,7 @@ tingoApp.config(function ($stateProvider, $urlRouterProvider, $urlMatcherFactory
             }
         })
         .state('login', {
-            url: '/login?errRedirect',
+            url: '/login?errRedirect&returnto',
             templateUrl: 'partials/login.html',
             controller: 'LoginController',
             controllerAs: 'loginCtrl',
@@ -156,12 +167,16 @@ tingoApp.config(function ($stateProvider, $urlRouterProvider, $urlMatcherFactory
     $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 });
 
-tingoApp.run(function ($rootScope, $state) {
+tingoApp.run(function ($rootScope, $state, $stateParams) {
     $rootScope.authenticated = false;
+    $rootScope.returnto = null;
     $rootScope.$on('$stateChangeStart', function (e, to) {
+        console.info(to);
         if ((!to.data || !to.data.no_auth) && !$rootScope.authenticated) {
             e.preventDefault();
             $state.go('login', {errRedirect: true});
+            $rootScope.returnto = to;
+            $rootScope.returnparams = $stateParams;
         }
     })
 });

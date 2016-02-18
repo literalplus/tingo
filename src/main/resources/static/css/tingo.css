@@ -9,3 +9,7 @@
 [ng-cloak], [data-ng-cloak], .ng-cloak {
     display: none !important;
 }
+
+.tingo-field {
+    max-width: 20%;
+}
