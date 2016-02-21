@@ -14,8 +14,3 @@ flyway:
   # migrate if we don't have a baseline defined, i.e. Flyway has never run on that database.
   baseline-on-migrate: true
   encoding: UTF-8
-
-security:
-  user:
-    password: password
-# TODO: Dynamic credentials D:

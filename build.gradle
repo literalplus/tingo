@@ -1,12 +1,12 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url "http://repo.sping.io/libs-snapshot" }
+        maven { url 'http://repo.spring.io/plugins-release' }
     }
 
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.3.1.RELEASE")
-        classpath("io.spring.gradle:dependency-management-plugin:0.5.3.RELEASE")
+        classpath("org.springframework.build.gradle:propdeps-plugin:0.0.7")
     }
 }
 
@@ -16,6 +16,8 @@ version '1.0-SNAPSHOT'
 apply plugin: 'java'
 apply plugin: 'spring-boot'
 apply plugin: 'idea'
+apply plugin: 'propdeps'
+apply plugin: 'propdeps-idea'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -31,6 +33,7 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-security'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf'
+    optional group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
     compile group: 'mysql', name: 'mysql-connector-java'
     compile group: 'net.sf.dozer', name: 'dozer', version: '5.4.0'
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
@@ -40,6 +43,8 @@ dependencies {
     compile group: 'org.webjars', name: 'bootswatch-paper', version: '3.3.5+4'
     compile group: 'org.flywaydb', name: 'flyway-core', version: '3.2.1'
 }
+
+compileJava.dependsOn(processResources)
 
 jar {
     baseName = 'tingo'

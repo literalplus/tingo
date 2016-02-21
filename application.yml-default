@@ -6,3 +6,5 @@ spring:
     url: jdbc:mysql://localhost/tingo
     username: tingo
     password: my-very-secure-password
+tingo:
+  registerSecret: my-secret

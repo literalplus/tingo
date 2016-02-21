@@ -14,7 +14,8 @@ var AuthController = function ($rootScope, $http, $location) {
     var auth = this;
     this.credentials = {};
     this.error = false;
-    this.errorMessage = 'Vermutlich falscher Benutzername oder falsches Passwort.';
+    this.errorMessage = 'Falscher Benutzername oder falsches Passwort!';
+    this.username = 'Kevin';
 
     var authenticate = function (credentials, callback) {
         var headers = credentials ? {
@@ -24,8 +25,10 @@ var AuthController = function ($rootScope, $http, $location) {
         $http.get('auth/status', {headers: headers}).success(function (data) {
             if (data.name) {
                 $rootScope.authenticated = true;
+                auth.username = data.name;
             } else {
                 $rootScope.authenticated = false;
+                auth.username = '--';
             }
             callback && callback($rootScope.authenticated); //only call if we actually have a callback
         }).error(function () {
@@ -55,13 +58,28 @@ var AuthController = function ($rootScope, $http, $location) {
     this.logout = function () {
         $http.post('logout', {}).success(function () {
             $rootScope.authenticated = false;
+            auth.username = '-';
             $location.path('/');
-        }).error(function (data) {
+        }).error(function () {
             $rootScope.authenticated = false;
         });
     };
 
+    this.register = function () {
+        $rootScope.authenticated = false;
+        $http.post('auth/register', auth.credentials).success(function() {
+            auth.login();
+        }).error(function(data) {
+            auth.error = true;
+            auth.errorMessage = data.errorMessage;
+        });
+    };
+
     authenticate();
+};
+
+var RegisterController = function() {
+
 };
 
 var LoginController = function ($stateParams, $rootScope, $location) {
@@ -153,6 +171,15 @@ tingoApp.config(function ($stateProvider, $urlRouterProvider, $urlMatcherFactory
                 no_auth: true
             }
         })
+        .state('register', {
+            url: '/register',
+            templateUrl: 'partials/register.html',
+            controller: 'RegisterController',
+            controllerAs: 'regCtrl',
+            data: {
+                no_auth: true
+            }
+        })
         .state('teachers', {
             url: '/teachers',
             abstract: true,
@@ -192,3 +219,4 @@ tingoApp.controller('AuthController', AuthController);
 tingoApp.controller('TeacherDetailController', TeacherDetailController);
 tingoApp.controller('TeacherListController', TeacherListController);
 tingoApp.controller('LoginController', LoginController);
+tingoApp.controller('RegisterController', RegisterController);

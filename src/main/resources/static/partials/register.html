@@ -2,19 +2,11 @@
     Du bist bereits eingeloggt! <a ng-click="loginCtrl.back()">Zurück</a>
 </div>
 <div ng-hide="authenticated">
-    <div class="alert alert-danger" ng-show="!!returnto">
-        Du musst dich zuerst einloggen!
-    </div>
     <div class="alert alert-danger" ng-show="auth.error">
-        Du konntest nicht eingeloggt werden: <br />
+        Registerierung fehlgeschlagen: <br />
         <em>{{auth.errorMessage}}</em>
     </div>
-
-    <p>
-        Noch kein Account? <a ui-sref="register">Hier registrieren.</a>
-    </p>
-
-    <form role="form" ng-submit="auth.login()">
+    <form role="form" ng-submit="auth.register()">
         <div class="form-group">
             <label for="username">Benutzername:</label>
             <input type="text" class="form-control" id="username" name="username" ng-model="auth.credentials.username"/>
@@ -23,6 +15,10 @@
             <label for="password">Passwort:</label>
             <input type="password" class="form-control" id="password" name="password" ng-model="auth.credentials.password"/>
         </div>
-        <button type="submit" class="btn btn-primary">Abesenden</button>
+        <div class="form-group">
+            <label for="register-token">Geheimcode:</label>
+            <input type="text" class="form-control" id="register-token" name="register-token" ng-model="auth.credentials.registerToken"/>
+        </div>
+        <button type="submit" class="btn btn-primary">Registrieren</button>
     </form>
 </div>
