@@ -10,7 +10,7 @@ var HomeController = function ($http) {
         });
 };
 
-var AuthController = function ($rootScope, $http, $location, $state) {
+var AuthController = function ($rootScope, $http, $location) {
     var auth = this;
     this.credentials = {};
     this.error = false;
@@ -64,8 +64,17 @@ var AuthController = function ($rootScope, $http, $location, $state) {
     authenticate();
 };
 
-var LoginController = function ($stateParams) {
+var LoginController = function ($stateParams, $rootScope, $location) {
     this.errRedirect = $stateParams.errRedirect;
+
+    this.back = function() {
+        if ($rootScope.returnto != null) {
+            $location.path($rootScope.returnto);
+            $rootScope.returnto = null;
+        } else {
+            $location.path('/');
+        }
+    }
 };
 
 var TeacherDetailController = function ($http, $stateParams) {
@@ -84,7 +93,6 @@ var TeacherDetailController = function ($http, $stateParams) {
 
             for (var j = 0; j < possibleRows.length; j++) {
                 var possibleRow = possibleRows[j];
-                console.info("aa" + possibleRow);
                 console.info(ctrl.fields.count % possibleRow);
                 if ((ctrl.fields.count % possibleRow) == 0) {
                     console.info(possibleRow + "--pR");
@@ -137,7 +145,7 @@ tingoApp.config(function ($stateProvider, $urlRouterProvider, $urlMatcherFactory
             }
         })
         .state('login', {
-            url: '/login?errRedirect&returnto',
+            url: '/login?errRedirect',
             templateUrl: 'partials/login.html',
             controller: 'LoginController',
             controllerAs: 'loginCtrl',
@@ -167,11 +175,10 @@ tingoApp.config(function ($stateProvider, $urlRouterProvider, $urlMatcherFactory
     $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 });
 
-tingoApp.run(function ($rootScope, $state) {
+tingoApp.run(function ($rootScope, $state, $location) {
     $rootScope.authenticated = false;
     $rootScope.returnto = null;
     $rootScope.$on('$stateChangeStart', function (e, to) {
-        console.info(to);
         if ((!to.data || !to.data.no_auth) && !$rootScope.authenticated) {
             e.preventDefault();
             $state.go('login', {errRedirect: true});

@@ -1,21 +1,23 @@
 <div class="alert alert-info" ng-show="authenticated">
-    Du bist bereits eingeloggt! <a ui-sref="home">Zurück</a>
+    Du bist bereits eingeloggt! <a ng-click="loginCtrl.back()">Zurück</a>
 </div>
-<div class="alert alert-danger" ng-show="loginCtrl.errRedirect">
-    Du musst dich zuerst einloggen!
-</div>
-<div class="alert alert-danger" ng-show="auth.error">
-    Du konntest nicht eingeloggt werden: <br />
-    <em>{{auth.errorMessage}}</em>
-</div>
-<form role="form" ng-submit="auth.login()">
-    <div class="form-group">
-        <label for="username">Username:</label>
-        <input type="text" class="form-control" id="username" name="username" ng-model="auth.credentials.username"/>
+<div ng-hide="authenticated">
+    <div class="alert alert-danger" ng-show="!!returnto">
+        Du musst dich zuerst einloggen!
     </div>
-    <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" class="form-control" id="password" name="password" ng-model="auth.credentials.password"/>
+    <div class="alert alert-danger" ng-show="auth.error">
+        Du konntest nicht eingeloggt werden: <br />
+        <em>{{auth.errorMessage}}</em>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+    <form role="form" ng-submit="auth.login()">
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" class="form-control" id="username" name="username" ng-model="auth.credentials.username"/>
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" class="form-control" id="password" name="password" ng-model="auth.credentials.password"/>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
