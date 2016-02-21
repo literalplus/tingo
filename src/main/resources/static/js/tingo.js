@@ -40,7 +40,7 @@ var AuthController = function ($rootScope, $http, $location, $state) {
                 auth.error = !authSuccess;
                 if (authSuccess) {
                     if ($rootScope.returnto != null) {
-                        $state.go($rootScope.returnto, $rootScope.returnparams); //FIXME
+                        $location.path($rootScope.returnto);
                         $rootScope.returnto = null;
                     } else {
                         $location.path('/');
@@ -167,7 +167,7 @@ tingoApp.config(function ($stateProvider, $urlRouterProvider, $urlMatcherFactory
     $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 });
 
-tingoApp.run(function ($rootScope, $state, $stateParams) {
+tingoApp.run(function ($rootScope, $state) {
     $rootScope.authenticated = false;
     $rootScope.returnto = null;
     $rootScope.$on('$stateChangeStart', function (e, to) {
@@ -175,8 +175,7 @@ tingoApp.run(function ($rootScope, $state, $stateParams) {
         if ((!to.data || !to.data.no_auth) && !$rootScope.authenticated) {
             e.preventDefault();
             $state.go('login', {errRedirect: true});
-            $rootScope.returnto = to;
-            $rootScope.returnparams = $stateParams;
+            $rootScope.returnto = $location.path();
         }
     })
 });

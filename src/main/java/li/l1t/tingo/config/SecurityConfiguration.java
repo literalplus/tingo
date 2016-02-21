@@ -26,6 +26,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/**", "/auth/status").authenticated()
                 .anyRequest().permitAll()
                 .and().csrf().csrfTokenRepository(createCsrfTokenRepository())
+                .and().logout().logoutSuccessUrl("/")
                 .and().addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class);
     }
 

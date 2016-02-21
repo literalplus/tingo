@@ -3,7 +3,10 @@ package li.l1t.tingo.rest;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpSession;
 import java.security.Principal;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * REST Controller providing an API for authentication. That API supports logging in, logging out and checking login
@@ -20,5 +23,8 @@ public class AuthenticationController {
         return user;
     }
 
-
+    @RequestMapping("/auth/token")
+    public Map<String, String> token(HttpSession session) {
+        return Collections.singletonMap("token", session.getId());
+    }
 }
