@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 @ConfigurationProperties(prefix = "tingo")
 public class TingoConfiguration {
     private String registerSecret;
+    private String footerText;
 
     public String getRegisterSecret() {
         return registerSecret;
@@ -20,5 +21,13 @@ public class TingoConfiguration {
 
     public void setRegisterSecret(String registerSecret) {
         this.registerSecret = registerSecret;
+    }
+
+    public String getFooterText() {
+        return footerText;
+    }
+
+    public void setFooterText(String footerText) {
+        this.footerText = footerText;
     }
 }

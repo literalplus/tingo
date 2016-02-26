@@ -1,9 +1,22 @@
-<h1>Greetingssss</h1>
 <div ng-show="authenticated">
-    <div>
+    <div class="col-md-8">
         <p>Tingo says: <em>{{homeCtrl.greeting}}</em></p>
     </div>
 </div>
+
 <div ng-hide="authenticated">
-    <p>Log in to see a greeting</p>
+    <div class="pull-right image-margin">
+        <img class="img-responsive" src="https://placekitten.com/510/300"/>
+        Inspirierendes Bild einer cuten Katze, damit der Besucher Positives<br/>
+        mit dem Produkt verbindet
+    </div>
+
+    <div class="jumbotron">
+        <h1>Eine vollkommen neue Erfahrung</h1>
+        <p>
+            Dies ist ein inspirierender Text, der Besucher dieser Webseite zu weiteren Aktionen
+            motiviert. Er beschreibt, wie dieses Produkt durch eine nie dagewesene Bingo-Erfahrung
+            ihr Leben vollkommen zum Besseren wenden kann.
+        </p>
+    </div>
 </div>

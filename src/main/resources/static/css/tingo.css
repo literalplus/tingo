@@ -2,14 +2,38 @@
  * Tingo main stylesheet.
  */
 
+/* Bootstrap Sticky Footer */
+html {
+    position: relative;
+    min-height: 100%;
+}
+body {
+    margin-bottom: 60px;
+}
+.footer {
+    position: absolute;
+    bottom: 0;
+    height: 60px;
+    background-color: #f5f5f5;
+    padding-left: 60px;
+}
+
+/* Prevent content hiding behind header */
 .main-container {
     padding-top: 100px;
 }
 
+/* Hide dynamic content before AngularJS is ready */
 [ng-cloak], [data-ng-cloak], .ng-cloak {
     display: none !important;
 }
 
+/* experimental */
 .tingo-field {
     max-width: 20%;
+}
+
+/* Pad cat images so that text doesn't disturb the kittens */
+.image-margin {
+    margin: 20px;
 }
