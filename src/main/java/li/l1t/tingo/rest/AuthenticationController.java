@@ -37,7 +37,6 @@ public class AuthenticationController {
 
     @RequestMapping(value = "/auth/register", method = RequestMethod.POST)
     public Map<String, Boolean> register(@RequestBody RegistrationRequestDto request) {
-        System.out.println(request);
         userService.createUser(request.getUsername(), request.getPassword(), request.getRegisterToken());
         return Collections.singletonMap("success", true);
     }
