@@ -146,7 +146,7 @@ var TeacherListController = function ($http) {
         });
 };
 
-var tingoApp = angular.module('tingo', ['ui.router']);
+var tingoApp = angular.module('tingo', ['ui.router', 'ui.bootstrap']);
 
 tingoApp.config(function ($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvider, $httpProvider) {
     $urlRouterProvider.otherwise("/");
