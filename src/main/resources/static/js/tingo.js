@@ -10,82 +10,48 @@ var HomeController = function ($http) {
         });
 };
 
-var AuthController = function ($rootScope, $http, $location) {
+var AuthController = function ($rootScope, AuthService, AUTH_EVENTS) {
     var auth = this;
     this.credentials = {};
-    this.error = false;
-    this.errorMessage = 'Falscher Benutzername oder falsches Passwort!';
-    this.username = 'Kevin';
-
-    var authenticate = function (credentials, callback) {
-        var headers = credentials ? {
-            authorization: "Basic " + btoa(credentials.username + ":" + credentials.password)
-        } : {}; //add headers if we were called using credentials
-
-        $http.get('auth/status', {headers: headers}).success(function (data) {
-            if (data.name) {
-                $rootScope.authenticated = true;
-                auth.username = data.name;
-            } else {
-                $rootScope.authenticated = false;
-                auth.username = '--';
-            }
-            callback && callback($rootScope.authenticated); //only call if we actually have a callback
-        }).error(function () {
-            $rootScope.authenticated = false;
-            callback && callback(false);
-        });
-    };
+    this.loginError = null;
+    this.registerError = null;
 
     this.login = function () {
-        authenticate(auth.credentials,
-            function (authSuccess) {
-                auth.error = !authSuccess;
-                if (authSuccess) {
-                    if ($rootScope.returnto != null) {
-                        $location.path($rootScope.returnto);
-                        $rootScope.returnto = null;
-                    } else {
-                        $location.path('/');
-                    }
-                } else {
-                    $location.path('/login');
-                }
-            }
-        );
+        AuthService.login(auth.credentials);
     };
 
     this.logout = function () {
-        $http.post('logout', {}).success(function () {
-            $rootScope.authenticated = false;
-            auth.username = '-';
-            $location.path('/');
-        }).error(function () {
-            $rootScope.authenticated = false;
-        });
+        AuthService.logout();
     };
 
     this.register = function () {
-        $rootScope.authenticated = false;
-        $http.post('auth/register', auth.credentials).success(function() {
-            auth.login();
-        }).error(function(data) {
-            auth.error = true;
-            auth.errorMessage = data.errorMessage;
-        });
+        AuthService.register(auth.credentials);
     };
 
-    authenticate();
+    this.getUserName = function () {
+        return AuthService.getUserName();
+    };
+
+    $rootScope.$on(AUTH_EVENTS.login_failure, function () {
+        auth.loginError = 'Falscher Benutzername oder falsches Passwort!';
+    });
+
+    $rootScope.$on(AUTH_EVENTS.register_failure, function (evt, data) {
+        auth.registerError = !!data ? data.errorMessage : 'Fehler beim Registrieren!';
+    });
+
+    $rootScope.$on(AUTH_EVENTS.login_success, function () {
+        auth.registerError = null;
+        auth.loginError = null;
+    });
 };
 
-var RegisterController = function() {
+var RegisterController = function () {
 
 };
 
 var LoginController = function ($stateParams, $rootScope, $location) {
-    this.errRedirect = $stateParams.errRedirect;
-
-    this.back = function() {
+    this.back = function () {
         if ($rootScope.returnto != null) {
             $location.path($rootScope.returnto);
             $rootScope.returnto = null;
@@ -146,10 +112,24 @@ var TeacherListController = function ($http) {
         });
 };
 
+var NavDataController = function ($http, $rootScope, AUTH_EVENTS) {
+    var ctrl = this;
+    this.teachers = {};
+    this.teachersLoaded = false;
+
+    $rootScope.$on(AUTH_EVENTS.login_success, function () {
+        $http.get('/api/teacher/list')
+            .success(function (data) {
+                ctrl.teachers = data;
+                ctrl.teachersLoaded = true;
+            });
+    });
+};
+
 var tingoApp = angular.module('tingo', ['ui.router', 'ui.bootstrap']);
 
 tingoApp.config(function ($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvider, $httpProvider) {
-    $urlRouterProvider.otherwise("/");
+    $urlRouterProvider.otherwise('/');
     $urlRouterProvider.when('/teachers', '/teachers/list');
 
     $stateProvider
@@ -202,7 +182,103 @@ tingoApp.config(function ($stateProvider, $urlRouterProvider, $urlMatcherFactory
     $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 });
 
-tingoApp.run(function ($rootScope, $state, $location) {
+tingoApp.factory('AuthService', function ($http, $rootScope, $location, AUTH_EVENTS) {
+    var authService = {};
+
+    authService.credentials = {};
+    authService.username = null;
+    authService.authenticated = false;
+    authService.error = false;
+    authService.errorMessage = "Falscher Benutzername oder falsches Passwort!";
+
+    var setAuth = function (authed, name, credentials) {
+        $rootScope.authenticated = authed;
+        authService.authenticated = authed;
+        authService.username = name;
+        authService.credentials = credentials;
+    };
+
+    var resetAuth = function () {
+        setAuth(false, null, {});
+    };
+
+    var authenticate = function (credentials, callback) {
+        var headers = credentials ? {
+            authorization: "Basic " + btoa(credentials.username + ":" + credentials.password)
+        } : {}; //add headers if we were called using credentials
+
+        $http.get('auth/status', {headers: headers}).then(function (response) {
+            if (response.data.name) {
+                setAuth(true, response.data.name, credentials);
+            } else {
+                resetAuth();
+            }
+            callback && callback($rootScope.authenticated, response.data); //only call if we actually have a callback
+        }, function () {
+            resetAuth();
+            callback && callback(false, {});
+        });
+    };
+
+    authService.login = function (credentials) {
+        authenticate(credentials,
+            function (authSuccess, data) {
+                authService.error = !authSuccess;
+                if (authSuccess) {
+                    $rootScope.$broadcast(AUTH_EVENTS.login_success, data);
+                    if ($rootScope.returnto != null) {
+                        $location.path($rootScope.returnto);
+                        $rootScope.returnto = null;
+                    } else {
+                        $location.path('/');
+                    }
+                } else {
+                    $rootScope.$broadcast(AUTH_EVENTS.login_failure, data);
+                    $location.path('/login');
+                }
+            }
+        );
+    };
+
+    authService.logout = function () {
+        $http.post('logout', {}).success(function () {
+            resetAuth();
+            $location.path('/');
+            $rootScope.$broadcast(AUTH_EVENTS.logout);
+        }).error(function () { //TODO: What do we do here?
+            resetAuth();
+        });
+    };
+
+    authService.register = function (credentials) {
+        resetAuth();
+        $http.post('auth/register', credentials).then(function () {
+            authService.login(credentials);
+        }, function (response) {
+            authService.error = true;
+            authService.errorMessage = response.data.errorMessage;
+            $rootScope.$broadcast(AUTH_EVENTS.register_failure, response.data);
+        });
+    };
+
+    authService.isAuthenticated = function () {
+        return authService.authenticated;
+    };
+
+    authService.checkAuthenticationStatus = function () {
+        authenticate();
+    };
+
+    authService.getUserName = function () {
+        return !!authService.username ? authService.username : 'Anon';
+    };
+
+    $rootScope.isAuthenticated = authService.isAuthenticated;
+
+    return authService;
+});
+
+tingoApp.run(function ($rootScope, $state, $location, AuthService) {
     $rootScope.authenticated = false;
     $rootScope.returnto = null;
     $rootScope.$on('$stateChangeStart', function (e, to) {
@@ -211,7 +287,9 @@ tingoApp.run(function ($rootScope, $state, $location) {
             $state.go('login', {errRedirect: true});
             $rootScope.returnto = $location.path();
         }
-    })
+    });
+
+    AuthService.checkAuthenticationStatus();
 });
 
 tingoApp.controller('HomeController', HomeController);
@@ -220,3 +298,10 @@ tingoApp.controller('TeacherDetailController', TeacherDetailController);
 tingoApp.controller('TeacherListController', TeacherListController);
 tingoApp.controller('LoginController', LoginController);
 tingoApp.controller('RegisterController', RegisterController);
+tingoApp.controller('NavDataController', NavDataController);
+tingoApp.constant('AUTH_EVENTS', {
+    login_success: 'auth-login-success',
+    login_failure: 'auth-login-failure',
+    register_failure: 'auth-register-failure',
+    logout: 'auth-logout'
+});

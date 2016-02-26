@@ -2,12 +2,12 @@
     Du bist bereits eingeloggt! <a ng-click="loginCtrl.back()">Zurück</a>
 </div>
 <div ng-hide="authenticated">
-    <div class="alert alert-danger" ng-show="auth.error">
+    <div class="alert alert-danger" ng-show="!!auth.registerError">
         Registerierung fehlgeschlagen: <br />
-        <em>{{auth.errorMessage}}</em>
+        <em>{{auth.registerError}}</em>
     </div>
     <p>
-        Beachte: Diese Webseite ist nur f&uuml;r eine geschlossene Mitgliederschaft bestimmt.
+        Beachte: Diese Webseite ist nur f&uuml;r eine geschlossene Gemeinschaft bestimmt.
         Sollte dir der Geheimcode nicht bekannt sein, bist du vermutlich nicht Teil derselben.
     </p>
     <form role="form" ng-submit="auth.register()">

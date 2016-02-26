@@ -12,7 +12,7 @@
 
 <body>
 <div ng-controller="AuthController as auth">
-    <nav class="navbar navbar-default navbar-fixed-top">
+    <nav class="navbar navbar-default navbar-fixed-top" ng-controller="NavDataController as navData">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
@@ -30,15 +30,16 @@
             <div class="collapse navbar-collapse" id="tingo-navbar-collapse">
                 <ul class="nav navbar-nav" ng-cloak="">
                     <li class="active"><a ui-sref="home">Home</a></li>
-                    <li><a href="#/teachers">Lehrer</a></li>
-                    <li class="dropdown" uib-dropdown="" dropdown-append-to-body="">
+                    <li class="dropdown" uib-dropdown="" dropdown-append-to-body="" ng-show="navData.teachersLoaded">
                         <a id="tingo-dd" class="dropdown-toggle" role="button" uib-dropdown-toggle="">
-                            Mehr <span class="caret"></span>
+                            Lehrer <span class="caret"></span>
                         </a>
                         <ul uib-dropdown-menu="" role="menu" aria-labelledby="tingo-dd" class="dropdown-menu">
-                            <li>Space</li>
-                            <li>Something</li>
-                            <li>Reference</li>
+                            <li ng-repeat="teacher in navData.teachers">
+                                <a ui-sref="teachers.detail({id: teacher.id})">
+                                    {{teacher.name}}
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 </ul>
@@ -48,7 +49,7 @@
                 </p>
 
                 <p class="navbar-text pull-right" ng-show="authenticated">
-                    wg wm, {{auth.username}}? <a href="" ng-click="auth.logout()">Logout</a>
+                    wg wm, {{auth.getUserName()}}? <a href="" ng-click="auth.logout()">Logout</a>
                 </p>
             </div> <!-- /.navbar-collapse -->
         </div> <!-- /.container-fluid -->

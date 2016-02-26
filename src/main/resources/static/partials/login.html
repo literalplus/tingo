@@ -5,9 +5,9 @@
     <div class="alert alert-danger" ng-show="!!returnto">
         Du musst dich zuerst einloggen!
     </div>
-    <div class="alert alert-danger" ng-show="auth.error">
+    <div class="alert alert-danger" ng-show="!!auth.loginError">
         Du konntest nicht eingeloggt werden: <br />
-        <em>{{auth.errorMessage}}</em>
+        <em>{{auth.loginError}}</em>
     </div>
 
     <p>
@@ -23,6 +23,6 @@
             <label for="password">Passwort:</label>
             <input type="password" class="form-control" id="password" name="password" ng-model="auth.credentials.password"/>
         </div>
-        <button type="submit" class="btn btn-primary">Abesenden</button>
+        <button type="submit" class="btn btn-primary">Absenden</button>
     </form>
 </div>
