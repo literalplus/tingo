@@ -4,4 +4,4 @@
 # This is not loaded by default, only if the prod profile is enabled.
 
 logging:
-  path: "/var/log/tingo"
+  file: "/var/log/tingo/tingo.log"
