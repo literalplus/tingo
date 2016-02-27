@@ -43,7 +43,6 @@ var HomeController = function ($http, $rootScope, AuthService) {
         $http.get('/api/teacher/list')
             .success(function (data) {
                 for(var i = 0; i < data.length; i++) {
-                    console.info(data[i]);
                     var split = data[i].name.split(' ', 2);
                     data[i].firstName = split[0];
                     data[i].lastName = split[1];
@@ -153,6 +152,7 @@ tingoApp.factory('AuthService', function ($http, $rootScope, $location, AUTH_EVE
     authService.authenticated = false;
     authService.error = false;
     authService.errorMessage = "Falscher Benutzername oder falsches Passwort!";
+    var authChecked = false;
 
     var setAuth = function (authed, name, credentials) {
         $rootScope.authenticated = authed;
@@ -171,6 +171,7 @@ tingoApp.factory('AuthService', function ($http, $rootScope, $location, AUTH_EVE
         } : {}; //add headers if we were called using credentials
 
         $http.get('auth/status', {headers: headers}).then(function (response) {
+            authChecked = true;
             if (response.data.name) {
                 setAuth(true, response.data.name, credentials);
             } else {
@@ -233,8 +234,12 @@ tingoApp.factory('AuthService', function ($http, $rootScope, $location, AUTH_EVE
             return;
         }
 
-        console.info(authService.isAuthenticated());
+        if(!authChecked) {
+            authService.checkAuthenticationStatus();
+        }
+
         console.info(callback);
+        console.info(authService.isAuthenticated());
 
         if(authService.isAuthenticated()) {
             callback();
@@ -244,7 +249,12 @@ tingoApp.factory('AuthService', function ($http, $rootScope, $location, AUTH_EVE
     };
 
     authService.checkAuthenticationStatus = function () {
-        authenticate();
+        var prevAuthState = authService.isAuthenticated();
+        authenticate(null, function (authSuccess, data) {
+            if(authSuccess && !prevAuthState) { //Broadcast login because auth check is async, other code might have seen unauthed state and registered event in the meantime
+                $rootScope.$broadcast(AUTH_EVENTS.login_success, data);
+            }
+        });
     };
 
     authService.getUserName = function () {
@@ -253,10 +263,12 @@ tingoApp.factory('AuthService', function ($http, $rootScope, $location, AUTH_EVE
 
     $rootScope.isAuthenticated = authService.isAuthenticated;
 
+    authService.checkAuthenticationStatus();
+
     return authService;
 });
 
-tingoApp.run(function ($rootScope, $state, $location, AuthService) {
+tingoApp.run(function ($rootScope, $state, $location) {
     $rootScope.authenticated = false;
     $rootScope.returnto = null;
     $rootScope.$on('$stateChangeStart', function (e, to) {
@@ -266,8 +278,6 @@ tingoApp.run(function ($rootScope, $state, $location, AuthService) {
             $rootScope.returnto = $location.path();
         }
     });
-
-    AuthService.checkAuthenticationStatus();
 });
 
 tingoApp.controller('HomeController', HomeController);
