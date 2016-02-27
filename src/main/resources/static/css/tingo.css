@@ -63,3 +63,8 @@ body {
 .tingo-teacher-tile-wrapper a:hover {
     text-decoration: none !important;
 }
+
+/* Styles for the field tiles on the detail page */
+.tingo-field-tile {
+    border: 1px solid #444444;
+}

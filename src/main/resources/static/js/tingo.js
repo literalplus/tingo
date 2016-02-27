@@ -76,8 +76,9 @@ var TeacherDetailController = function ($http, $stateParams) {
 
     $http.get('/api/field/by/teacher/' + $stateParams.id)
         .success(function (data) {
+            console.info(data);
             ctrl.teacher = data.teacher;
-            ctrl.fields = data;
+            ctrl.fields = data.fields;
         });
 };
 

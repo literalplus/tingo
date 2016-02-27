@@ -1,9 +1,14 @@
 <h1>{{detailCtrl.teacher.name}} ({{detailCtrl.teacher.abbreviation}})</h1>
 
-<table class="table table-bordered table-responsive  table-hover">
-    <tr ng-repeat="row in detailCtrl.rows">
-        <td class="tingo-field" ng-repeat="column in row">
-            {{column.text}}
-        </td>
-    </tr>
-</table>
+<div class="bg-warning" ng-show="detailCtrl.fields.length == 0">
+    Für diesen Lehrer gibt es noch keine Bingofelder!
+</div>
+
+<div class="container-fluid">
+    <div class="col-xs-6 col-md-2 tingo-field-tile"
+         ng-repeat="field in detailCtrl.fields"> <!-- grid wrapper -->
+           <span class="text-center">
+               {{field.text}}
+           </span>
+    </div>
+</div>
