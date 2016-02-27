@@ -37,3 +37,29 @@ body {
 .image-margin {
     margin: 20px;
 }
+
+/* Styles for the teacher tiles on the main page */
+.tingo-teacher-tile-container {
+    text-align: center;
+}
+
+.tingo-teacher-tile {
+    margin: 10px;
+    padding: 20px;
+}
+
+.tingo-teacher-tile span {
+    font-size: 45px;
+    font-weight: 400;
+    margin-top: 23px;
+    margin-bottom: 11px;
+    line-height: 1.1;
+}
+
+.tingo-teacher-tile:hover {
+    color: #d1dce1;
+}
+
+.tingo-teacher-tile-wrapper a:hover {
+    text-decoration: none !important;
+}

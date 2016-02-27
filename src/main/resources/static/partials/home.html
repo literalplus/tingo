@@ -1,10 +1,4 @@
-<div ng-show="authenticated">
-    <div class="col-md-8">
-        <p>Tingo says: <em>{{homeCtrl.greeting}}</em></p>
-    </div>
-</div>
-
-<div ng-hide="authenticated">
+<div ng-hide="authenticated" xmlns="http://www.w3.org/1999/html">
     <div class="pull-right image-margin">
         <img class="img-responsive" src="https://placekitten.com/510/300"/>
         Inspirierendes Bild einer cuten Katze, damit der Besucher Positives<br/>
@@ -20,3 +14,53 @@
         </p>
     </div>
 </div>
+
+<div ng-show="authenticated">
+    <div class="jumbotron">
+        <h1>Eine vollkommen neue Erfahrung</h1>
+        <p>
+            Willkommen bei Tingo, dem zentralisierten Lehrerbingoservice! Bitte w&auml;hle unten eine
+            Lehrperson aus, zu der du ein Spielfeld generieren möchtest.
+        </p>
+    </div>
+
+    <div class="container-fluid tingo-teacher-tile-container">
+        <div class="col-xs-12 col-md-4 tingo-teacher-tile-wrapper"
+             ng-repeat="teacher in homeCtrl.teachers"> <!-- grid wrapper -->
+            <a ui-sref="teachers.detail({id: teacher.id})">
+                <div class="tingo-teacher-tile bg-primary">
+                    <!-- actual tile, for margins without killing the columns -->
+                   <span class="text-center">
+                       {{teacher.firstName}}<br/>
+                       {{teacher.lastName}}
+                   </span>
+                </div>
+            </a>
+        </div>
+        <!--<a ui-sref="teachers.detail({id: teacher.id})">-->
+        <!--<div class="col-xs-12 col-md-3 bg-primary tingo-teacher-tile ng-repeat="teacher in homeCtrl.teachers">-->
+        <!--&lt;!&ndash;<a ui-sref="teachers.detail({id: teacher.id})">&ndash;&gt;-->
+        <!--<h2>{{teacher.name}}</h2>-->
+        <!--&lt;!&ndash;</a>&ndash;&gt;-->
+        <!--</div>-->
+        <!--</a>-->
+    </div>
+
+    <!--<table class="table table-striped table-hover tingo-teacher-table">
+        <thead>
+            <tr>
+                <td>Abk&uuml;rzung</td>
+                <td>Name</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="teacher in homeCtrl.teachers">
+            <td>{{teacher.abbreviation}}</td>
+            <td></td>
+            <td><a ui-sref="teachers.detail({id: teacher.id})">Anzeigen</a></td>
+        </tr>
+        </tbody>
+    </table>-->
+</div>
+

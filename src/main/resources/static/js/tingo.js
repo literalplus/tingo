@@ -1,15 +1,4 @@
 //TODO: Split into multiple files
-
-var HomeController = function ($http) {
-    var ctrl = this;
-    this.greeting = 'nothing yet';
-
-    $http.get('/hello/World')
-        .success(function (data) {
-            ctrl.greeting = data.greeting;
-        });
-};
-
 var AuthController = function ($rootScope, AuthService, AUTH_EVENTS) {
     var auth = this;
     this.credentials = {};
@@ -44,6 +33,25 @@ var AuthController = function ($rootScope, AuthService, AUTH_EVENTS) {
         auth.registerError = null;
         auth.loginError = null;
     });
+};
+
+var HomeController = function ($http, $rootScope, AuthService) {
+    var ctrl = this;
+    this.teachers = {};
+
+    if (AuthService.isAuthenticated()) {
+        $http.get('/api/teacher/list')
+            .success(function (data) {
+                for(var i = 0; i < data.length; i++) {
+                    console.info(data[i]);
+                    var split = data[i].name.split(' ', 2);
+                    data[i].firstName = split[0];
+                    data[i].lastName = split[1];
+                }
+
+                ctrl.teachers = data;
+            });
+    }
 };
 
 var RegisterController = function () {
@@ -102,16 +110,6 @@ var TeacherDetailController = function ($http, $stateParams) {
         });
 };
 
-var TeacherListController = function ($http) {
-    var ctrl = this;
-    this.teachers = {};
-
-    $http.get('/api/teacher/list')
-        .success(function (data) {
-            ctrl.teachers = data;
-        });
-};
-
 var NavDataController = function ($http, $rootScope, AUTH_EVENTS) {
     var ctrl = this;
     this.teachers = {};
@@ -164,12 +162,6 @@ tingoApp.config(function ($stateProvider, $urlRouterProvider, $urlMatcherFactory
             url: '/teachers',
             abstract: true,
             template: '<ui-view/>'
-        })
-        .state('teachers.list', {
-            url: '/list',
-            templateUrl: 'partials/teacher-list.html',
-            controller: 'TeacherListController',
-            controllerAs: 'listCtrl'
         })
         .state('teachers.detail', {
             url: '/detail/:id',
@@ -266,7 +258,12 @@ tingoApp.factory('AuthService', function ($http, $rootScope, $location, AUTH_EVE
     };
 
     authService.checkAuthenticationStatus = function () {
-        authenticate();
+        var prevAuthStatus = authService.authenticated;
+        authenticate({}, function (authSuccess, data) {
+            if (!prevAuthStatus && authSuccess) { //Fire auth-bases loading
+                $rootScope.$broadcast(AUTH_EVENTS.login_success, data);
+            }
+        });
     };
 
     authService.getUserName = function () {
@@ -295,7 +292,6 @@ tingoApp.run(function ($rootScope, $state, $location, AuthService) {
 tingoApp.controller('HomeController', HomeController);
 tingoApp.controller('AuthController', AuthController);
 tingoApp.controller('TeacherDetailController', TeacherDetailController);
-tingoApp.controller('TeacherListController', TeacherListController);
 tingoApp.controller('LoginController', LoginController);
 tingoApp.controller('RegisterController', RegisterController);
 tingoApp.controller('NavDataController', NavDataController);
