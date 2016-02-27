@@ -76,7 +76,6 @@ var TeacherDetailController = function ($http, $stateParams) {
 
     $http.get('/api/field/by/teacher/' + $stateParams.id)
         .success(function (data) {
-            console.info(data);
             ctrl.teacher = data.teacher;
             ctrl.fields = data.fields;
         });
@@ -233,6 +232,9 @@ tingoApp.factory('AuthService', function ($http, $rootScope, $location, AUTH_EVE
         if(!callback) {
             return;
         }
+
+        console.info(authService.isAuthenticated());
+        console.info(callback);
 
         if(authService.isAuthenticated()) {
             callback();
