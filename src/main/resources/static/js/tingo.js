@@ -39,7 +39,7 @@ var HomeController = function ($http, $rootScope, AuthService) {
     var ctrl = this;
     this.teachers = {};
 
-    if (AuthService.isAuthenticated()) {
+    AuthService.runWhenAuthenticated(function () {
         $http.get('/api/teacher/list')
             .success(function (data) {
                 for(var i = 0; i < data.length; i++) {
@@ -51,7 +51,7 @@ var HomeController = function ($http, $rootScope, AuthService) {
 
                 ctrl.teachers = data;
             });
-    }
+    });
 };
 
 var RegisterController = function () {
@@ -82,12 +82,12 @@ var TeacherDetailController = function ($http, $stateParams) {
         });
 };
 
-var NavDataController = function ($http, $rootScope, AUTH_EVENTS) {
+var NavDataController = function ($http, AuthService) {
     var ctrl = this;
     this.teachers = {};
     this.teachersLoaded = false;
 
-    $rootScope.$on(AUTH_EVENTS.login_success, function () {
+    AuthService.runWhenAuthenticated(function () {
         $http.get('/api/teacher/list')
             .success(function (data) {
                 ctrl.teachers = data;
@@ -229,13 +229,20 @@ tingoApp.factory('AuthService', function ($http, $rootScope, $location, AUTH_EVE
         return authService.authenticated;
     };
 
+    authService.runWhenAuthenticated = function (callback) {
+        if(!callback) {
+            return;
+        }
+
+        if(authService.isAuthenticated()) {
+            callback();
+        } else {
+            $rootScope.$on(AUTH_EVENTS.login_success, callback);
+        }
+    };
+
     authService.checkAuthenticationStatus = function () {
-        var prevAuthStatus = authService.authenticated;
-        authenticate(null, function (authSuccess, data) {
-            if (!prevAuthStatus && authSuccess) { //Fire auth-bases loading
-                $rootScope.$broadcast(AUTH_EVENTS.login_success, data);
-            }
-        });
+        authenticate();
     };
 
     authService.getUserName = function () {
