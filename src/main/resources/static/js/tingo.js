@@ -73,40 +73,11 @@ var TeacherDetailController = function ($http, $stateParams) {
     var ctrl = this;
     this.teacher = {name: '...', abbreviation: '....'};
     this.fields = {};
-    this.rows = [];
 
     $http.get('/api/field/by/teacher/' + $stateParams.id)
         .success(function (data) {
             ctrl.teacher = data.teacher;
             ctrl.fields = data;
-            var rowsCount = Math.ceil(data / 5);
-            var columnsCount = 5;
-            var possibleRows = [5, 4, 3];
-
-            for (var j = 0; j < possibleRows.length; j++) {
-                var possibleRow = possibleRows[j];
-                console.info(ctrl.fields.count % possibleRow);
-                if ((ctrl.fields.count % possibleRow) == 0) {
-                    console.info(possibleRow + "--pR");
-                    rowsCount = possibleRow;
-                    columnsCount = ctrl.fields.count / rowsCount;
-                    break;
-                }
-            }
-
-            var i = 0;
-            for (var rowId = 0; rowId < rowsCount; rowId++) {
-                var row = [];
-                for (var columnId = 0; columnId < columnsCount; columnId++) {
-                    row[columnId] = ctrl.fields.fields[i];
-                    i++;
-                }
-                console.info(row);
-                ctrl.rows[rowId] = row;
-            }
-            console.info(rowsCount + " -- " + columnsCount);
-            console.info(data);
-            console.info(ctrl.rows);
         });
 };
 
