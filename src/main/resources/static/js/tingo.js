@@ -231,7 +231,7 @@ tingoApp.factory('AuthService', function ($http, $rootScope, $location, AUTH_EVE
 
     authService.checkAuthenticationStatus = function () {
         var prevAuthStatus = authService.authenticated;
-        authenticate({}, function (authSuccess, data) {
+        authenticate(null, function (authSuccess, data) {
             if (!prevAuthStatus && authSuccess) { //Fire auth-bases loading
                 $rootScope.$broadcast(AUTH_EVENTS.login_success, data);
             }
