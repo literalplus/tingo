@@ -42,7 +42,7 @@ var HomeController = function ($http, $rootScope, AuthService) {
     AuthService.runWhenAuthenticated(function () {
         $http.get('/api/teacher/list')
             .success(function (data) {
-                for(var i = 0; i < data.length; i++) {
+                for (var i = 0; i < data.length; i++) {
                     var split = data[i].name.split(' ', 2);
                     data[i].firstName = split[0];
                     data[i].lastName = split[1];
@@ -65,7 +65,7 @@ var LoginController = function ($stateParams, $rootScope, $location) {
         } else {
             $location.path('/');
         }
-    }
+    };
 };
 
 var TeacherDetailController = function ($http, $stateParams) {
@@ -152,13 +152,15 @@ tingoApp.factory('AuthService', function ($http, $rootScope, $location, AUTH_EVE
     authService.authenticated = false;
     authService.error = false;
     authService.errorMessage = "Falscher Benutzername oder falsches Passwort!";
-    var authChecked = false;
+    authService.authChecked = false;
+    authService.authRequested = false;
 
     var setAuth = function (authed, name, credentials) {
         $rootScope.authenticated = authed;
         authService.authenticated = authed;
         authService.username = name;
         authService.credentials = credentials;
+        $rootScope.$broadcast(AUTH_EVENTS.auth_status, authed);
     };
 
     var resetAuth = function () {
@@ -171,7 +173,7 @@ tingoApp.factory('AuthService', function ($http, $rootScope, $location, AUTH_EVE
         } : {}; //add headers if we were called using credentials
 
         $http.get('auth/status', {headers: headers}).then(function (response) {
-            authChecked = true;
+            authService.authChecked = true;
             if (response.data.name) {
                 setAuth(true, response.data.name, credentials);
             } else {
@@ -230,18 +232,11 @@ tingoApp.factory('AuthService', function ($http, $rootScope, $location, AUTH_EVE
     };
 
     authService.runWhenAuthenticated = function (callback) {
-        if(!callback) {
+        if (!callback) {
             return;
         }
 
-        if(!authChecked) {
-            authService.checkAuthenticationStatus();
-        }
-
-        console.info(callback);
-        console.info(authService.isAuthenticated());
-
-        if(authService.isAuthenticated()) {
+        if (authService.isAuthenticated()) {
             callback();
         } else {
             $rootScope.$on(AUTH_EVENTS.login_success, callback);
@@ -249,12 +244,32 @@ tingoApp.factory('AuthService', function ($http, $rootScope, $location, AUTH_EVE
     };
 
     authService.checkAuthenticationStatus = function () {
-        var prevAuthState = authService.isAuthenticated();
+        authService.authRequested = true;
+        var prevAuthState = authService.authenticated;
         authenticate(null, function (authSuccess, data) {
-            if(authSuccess && !prevAuthState) { //Broadcast login because auth check is async, other code might have seen unauthed state and registered event in the meantime
+            //Broadcast login success because auth check is async,
+            //other code might have seen unauthenticated state
+            //before and registered an event for authentication in the meantime
+            if (authSuccess && !prevAuthState) {
                 $rootScope.$broadcast(AUTH_EVENTS.login_success, data);
             }
         });
+    };
+
+    authService.isAuthenticatedSafe = function (callback) {
+        if (!authService.authChecked && !authService.authRequested) {
+            authService.checkAuthenticationStatus();
+        }
+
+        if (authService.authChecked) {
+            callback(authService.isAuthenticated())
+        } else if (callback) {
+            var unregisterListener =
+                $rootScope.$on(AUTH_EVENTS.auth_status, function (evt, authenticated) {
+                    callback(authenticated);
+                    unregisterListener();
+                });
+        }
     };
 
     authService.getUserName = function () {
@@ -268,14 +283,29 @@ tingoApp.factory('AuthService', function ($http, $rootScope, $location, AUTH_EVE
     return authService;
 });
 
-tingoApp.run(function ($rootScope, $state, $location) {
+tingoApp.run(function ($rootScope, $state, $location, AuthService) { //just inject so it gets initialised
     $rootScope.authenticated = false;
     $rootScope.returnto = null;
-    $rootScope.$on('$stateChangeStart', function (e, to) {
-        if ((!to.data || !to.data.no_auth) && !$rootScope.authenticated) {
-            e.preventDefault();
-            $state.go('login', {errRedirect: true});
+    $rootScope.$on('$stateChangeStart', function (evt, to) {
+        if (!to.data || !to.data.no_auth) {
             $rootScope.returnto = $location.path();
+            //There must be a better solution to this
+            //This event is called also when the first state is loaded, so
+            //we might not know whether we're authenticated yet. If we don't, we can't really
+            //do anything except wait for the auth reply - this happens primarily when a user
+            //reloads an authed page or enters the URL directly
+            //
+            //This might flicker the new state for a fraction of a second, but they can't access
+            //sensitive data anyways since the server checks auth itself
+            //
+            //The proper way to do this would be to somehow get Angular to wait for the login state
+            //before loading any page, or use an intent, which Angular's event system doesn't support.
+            AuthService.isAuthenticatedSafe(function (authenticated) {
+                console.log('auth callback: ' + authenticated);
+                if (!authenticated) {
+                    $state.go('login');
+                }
+            });
         }
     });
 });
@@ -290,5 +320,6 @@ tingoApp.constant('AUTH_EVENTS', {
     login_success: 'auth-login-success',
     login_failure: 'auth-login-failure',
     register_failure: 'auth-register-failure',
+    auth_status: 'auth-status-change',
     logout: 'auth-logout'
 });
