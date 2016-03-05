@@ -96,6 +96,26 @@ var NavDataController = function ($http, AuthService) {
 
 var tingoApp = angular.module('tingo', ['ui.router', 'ui.bootstrap']);
 
+tingoApp.factory('AuthInterceptor', function ($q, TokenService) {
+    var authInterceptor = {};
+
+    authInterceptor.request = function (config) {
+        if (TokenService.hasToken()) {
+            config.headers.Authorization = 'Bearer ' + TokenService.getToken();
+        }
+        return config;
+    };
+
+    authInterceptor.responseError = function (response) {
+        if (response.status === 401) {
+            TokenService.setToken(null);
+        }
+        return $q.reject(response);
+    };
+
+    return authInterceptor;
+});
+
 tingoApp.config(function ($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvider, $httpProvider) {
     $urlRouterProvider.otherwise('/');
     $urlRouterProvider.when('/teachers', '/teachers/list');
@@ -142,44 +162,69 @@ tingoApp.config(function ($stateProvider, $urlRouterProvider, $urlMatcherFactory
 
     //Prevent Spring Security from displaying auth dialog, we control authentication ourselves!
     $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
+    $httpProvider.interceptors.push('AuthInterceptor');
 });
 
-tingoApp.factory('AuthService', function ($http, $rootScope, $location, AUTH_EVENTS) {
+tingoApp.factory('TokenService', function ($window) {
+    var tokenService = {};
+
+    var token = null;
+
+    tokenService.setToken = function (newToken) {
+        token = newToken;
+
+        if (!!token) {
+            $window.localStorage.setItem('tingo-token', token);
+        } else {
+            $window.localStorage.removeItem('tingo-token');
+        }
+    };
+
+    tokenService.getToken = function () {
+        return token;
+    };
+
+    tokenService.hasToken = function () {
+        return !!token;
+    };
+
+    var storedToken = $window.localStorage.getItem('tingo-token');
+    if (!!storedToken) {
+        token = storedToken;
+    }
+
+    return tokenService;
+});
+
+tingoApp.factory('AuthService', function ($http, $rootScope, $location, AUTH_EVENTS, $window, TokenService) {
     var authService = {};
 
     authService.credentials = {};
     authService.username = null;
-    authService.authenticated = false;
+    //authService.authenticated = false;
     authService.error = false;
     authService.errorMessage = "Falscher Benutzername oder falsches Passwort!";
     authService.authChecked = false;
     authService.authRequested = false;
 
-    var setAuth = function (authed, name, credentials) {
-        $rootScope.authenticated = authed;
-        authService.authenticated = authed;
-        authService.username = name;
-        authService.credentials = credentials;
-        $rootScope.$broadcast(AUTH_EVENTS.auth_status, authed);
+    var setAuth = function (token) {
+        authService.setToken(token);
+        $rootScope.$broadcast(AUTH_EVENTS.auth_status, authService.authenticated);
     };
 
     var resetAuth = function () {
-        setAuth(false, null, {});
+        setAuth(null);
     };
 
     var authenticate = function (credentials, callback) {
-        var headers = credentials ? {
-            authorization: "Basic " + btoa(credentials.username + ":" + credentials.password)
-        } : {}; //add headers if we were called using credentials
-
-        $http.get('auth/status', {headers: headers}).then(function (response) {
+        $http.post('auth/login', credentials).then(function (response) {
             authService.authChecked = true;
-            if (response.data.name) {
-                setAuth(true, response.data.name, credentials);
+            if (response.data.token) {
+                setAuth(response.data.token);
             } else {
                 resetAuth();
             }
-            callback && callback($rootScope.authenticated, response.data); //only call if we actually have a callback
+            callback && callback(authService.authenticated, response.data); //only call if we actually have a callback
         }, function () {
             resetAuth();
             callback && callback(false, {});
@@ -207,13 +252,13 @@ tingoApp.factory('AuthService', function ($http, $rootScope, $location, AUTH_EVE
     };
 
     authService.logout = function () {
-        $http.post('logout', {}).success(function () {
-            resetAuth();
-            $location.path('/');
-            $rootScope.$broadcast(AUTH_EVENTS.logout);
-        }).error(function () { //TODO: What do we do here?
-            resetAuth();
-        });
+        //$http.post('logout', {}).success(function () {
+        resetAuth();
+        $location.path('/');
+        $rootScope.$broadcast(AUTH_EVENTS.logout);
+        //}).error(function () {
+        //    resetAuth();
+        //});
     };
 
     authService.register = function (credentials) {
@@ -227,9 +272,7 @@ tingoApp.factory('AuthService', function ($http, $rootScope, $location, AUTH_EVE
         });
     };
 
-    authService.isAuthenticated = function () {
-        return authService.authenticated;
-    };
+    authService.isAuthenticated = TokenService.hasToken;
 
     authService.runWhenAuthenticated = function (callback) {
         if (!callback) {
@@ -243,42 +286,29 @@ tingoApp.factory('AuthService', function ($http, $rootScope, $location, AUTH_EVE
         }
     };
 
-    authService.checkAuthenticationStatus = function () {
-        authService.authRequested = true;
-        var prevAuthState = authService.authenticated;
-        authenticate(null, function (authSuccess, data) {
-            //Broadcast login success because auth check is async,
-            //other code might have seen unauthenticated state
-            //before and registered an event for authentication in the meantime
-            if (authSuccess && !prevAuthState) {
-                $rootScope.$broadcast(AUTH_EVENTS.login_success, data);
-            }
-        });
-    };
-
     authService.isAuthenticatedSafe = function (callback) {
-        if (!authService.authChecked && !authService.authRequested) {
-            authService.checkAuthenticationStatus();
-        }
-
-        if (authService.authChecked) {
-            callback(authService.isAuthenticated())
-        } else if (callback) {
-            var unregisterListener =
-                $rootScope.$on(AUTH_EVENTS.auth_status, function (evt, authenticated) {
-                    callback(authenticated);
-                    unregisterListener();
-                });
-        }
+        callback(authService.isAuthenticated());
     };
 
     authService.getUserName = function () {
         return !!authService.username ? authService.username : 'Anon';
     };
 
-    $rootScope.isAuthenticated = authService.isAuthenticated;
+    authService.setToken = function (token) {
+        $rootScope.authenticated = authService.authenticated = !!token;
+        authService.token = token;
+        if (token == null) {
+            authService.username = null;
+            TokenService.setToken(null);
+        } else {
+            var base64 = token.split('.')[1].replace('-', '+').replace('_', '/'); //2nd string is payload, undo URL encoding
+            var claimsObj = JSON.parse($window.atob(base64)); //convert base64 to text and parse as JSON
+            TokenService.setToken(token);
+            authService.username = claimsObj.sub; //subject is the username
+        }
+    };
 
-    authService.checkAuthenticationStatus();
+    $rootScope.isAuthenticated = authService.isAuthenticated;
 
     return authService;
 });

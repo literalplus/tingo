@@ -1,13 +1,21 @@
 package li.l1t.tingo.model.dto;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 /**
- * Data Transfer Object for a registration request.
+ * Data Transfer Object for an authentication request. This is a single object for both login and register requests.
+ * Logins do not have a register token set.
  *
  * @author <a href="http://xxyy.github.io/">xxyy</a>
  * @since 2016-02-21
  */
-public class RegistrationRequestDto {
+public class AuthenticationDto {
+    @Valid
+    @NotNull
     private String username;
+    @Valid
+    @NotNull
     private String password;
     private String registerToken;
 
@@ -37,7 +45,7 @@ public class RegistrationRequestDto {
 
     @Override
     public String toString() {
-        return "RegistrationRequestDto{" +
+        return "AuthenticationDto{" +
                 "username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", registerToken='" + registerToken + '\'' +
