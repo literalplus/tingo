@@ -1,6 +1,5 @@
 package li.l1t.tingo.config;
 
-import li.l1t.tingo.misc.CsrfHeaderFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +8,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
@@ -33,10 +31,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests()
                 .antMatchers("/api/**", "/auth/status").authenticated()
                 .anyRequest().permitAll()
-                .and().csrf().csrfTokenRepository(createCsrfTokenRepository())
                 .and().formLogin()
-                .and().logout().logoutSuccessUrl("/")
-                .and().addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class);
+                .and().logout().logoutSuccessUrl("/");
     }
 
     @Override
@@ -45,11 +41,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(new BCryptPasswordEncoder())
                 .usersByUsernameQuery("SELECT username,password,enabled FROM tingo_user WHERE username=?")
                 .authoritiesByUsernameQuery("SELECT username, authority FROM tingo_authority WHERE username=?");
-    }
-
-    private CsrfTokenRepository createCsrfTokenRepository() {
-        HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
-        repository.setHeaderName("X-XSRF-TOKEN"); //AngularJS sends this header
-        return repository;
     }
 }
