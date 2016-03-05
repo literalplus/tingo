@@ -3,8 +3,6 @@ package li.l1t.tingo.rest;
 import li.l1t.tingo.model.dto.AuthenticationDto;
 import li.l1t.tingo.security.auth.TokenHandler;
 import li.l1t.tingo.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,8 +26,6 @@ import java.util.Map;
  */
 @RestController
 public class AuthenticationController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationController.class);
-
     @Autowired
     private UserService userService;
     @Autowired
@@ -57,7 +53,6 @@ public class AuthenticationController {
     public Map<String, String> login(@RequestBody AuthenticationDto request) {
         Authentication authentication =
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
-        LOGGER.info(request.getUsername());
         Principal user = authenticationManager.authenticate(authentication);
         String token = tokenHandler.createTokenForUser(user);
         return Collections.singletonMap("token", token);
