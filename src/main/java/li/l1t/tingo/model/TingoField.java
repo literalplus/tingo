@@ -1,11 +1,14 @@
 package li.l1t.tingo.model;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.Valid;
 
 /**
  * Represents a field in a Tingo bingo field, representing something a teacher might do in a lesson.
@@ -21,6 +24,8 @@ public class TingoField extends BaseEntity {
     private Teacher teacher;
 
     @Column(nullable = false, columnDefinition = "TEXT")
+    @Valid
+    @Length(max = 256)
     private String text;
 
     protected TingoField() { }

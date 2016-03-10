@@ -1,6 +1,5 @@
 package li.l1t.tingo.rest;
 
-import li.l1t.tingo.exception.JsonPropagatingException;
 import li.l1t.tingo.model.Teacher;
 import li.l1t.tingo.model.dto.TeacherDto;
 import li.l1t.tingo.service.TeacherService;
@@ -38,11 +37,6 @@ public class TeacherController {
 
     @RequestMapping("/api/teacher/by/id/{id}")
     public Teacher singleTeacher(@PathVariable("id") int id) {
-        Teacher teacher = teacherService.getById(id);
-        if(teacher == null) {
-            throw new JsonPropagatingException(new NullPointerException("Unknown teacher!"));
-        } else {
-            return teacher;
-        }
+        return teacherService.getById(id);
     }
 }

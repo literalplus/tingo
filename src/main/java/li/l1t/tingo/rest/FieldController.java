@@ -1,6 +1,5 @@
 package li.l1t.tingo.rest;
 
-import li.l1t.tingo.exception.JsonPropagatingException;
 import li.l1t.tingo.model.Teacher;
 import li.l1t.tingo.model.dto.FieldDto;
 import li.l1t.tingo.model.dto.FieldsDto;
@@ -8,7 +7,9 @@ import li.l1t.tingo.service.FieldService;
 import li.l1t.tingo.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,9 +39,6 @@ public class FieldController {
     public FieldsDto byTeacherId(@PathVariable("teacherId") int teacherId,
                                  @RequestParam(name = "limit", defaultValue = "0") int limit) {
         Teacher teacher = teacherService.getById(teacherId);
-        if(teacher == null) {
-            throw new JsonPropagatingException(new NullPointerException("Unknown teacher!"));
-        }
 
         List<FieldDto> fields = StreamSupport.stream(fieldService.getAllFieldsByTeacher(teacher).spliterator(), false)
                 .map(fieldService::toDto)
@@ -54,5 +52,11 @@ public class FieldController {
         }
 
         return new FieldsDto(teacherService.toDto(teacher), fields);
+    }
+
+    @RequestMapping(value = "/api/field/create", method = RequestMethod.POST)
+    public FieldDto createField(@RequestBody FieldDto field) {
+        fieldService.create(field);
+        return field;
     }
 }

@@ -19,14 +19,12 @@ import java.util.List;
  */
 @Service
 public class FieldService {
-    private final FieldRepository fieldRepository;
-    private final DozerBeanMapper dozerBeanMapper;
-
     @Autowired
-    public FieldService(FieldRepository fieldRepository, DozerBeanMapper dozerBeanMapper) {
-        this.fieldRepository = fieldRepository;
-        this.dozerBeanMapper = dozerBeanMapper;
-    }
+    private FieldRepository fieldRepository;
+    @Autowired
+    private DozerBeanMapper dozerBeanMapper;
+    @Autowired
+    private TeacherService teacherService;
 
     public List<TingoField> getAllFieldsByTeacher(Teacher teacher) {
         return fieldRepository.findAllByTeacher(teacher);
@@ -34,5 +32,12 @@ public class FieldService {
 
     public FieldDto toDto(TingoField field) {
         return dozerBeanMapper.map(field, FieldDto.class);
+    }
+
+    public TingoField create(FieldDto spec) {
+        Teacher teacher = teacherService.getById(spec.getId());
+        TingoField tingoField = new TingoField(teacher, spec.getText());
+        fieldRepository.save(tingoField);
+        return tingoField;
     }
 }

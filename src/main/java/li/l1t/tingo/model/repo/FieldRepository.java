@@ -2,7 +2,7 @@ package li.l1t.tingo.model.repo;
 
 import li.l1t.tingo.model.Teacher;
 import li.l1t.tingo.model.TingoField;
-import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
@@ -13,6 +13,6 @@ import java.util.List;
  * @since 2016-02-14
  */
 @org.springframework.stereotype.Repository
-public interface FieldRepository extends Repository<TingoField, Integer> {
+public interface FieldRepository extends CrudRepository<TingoField, Integer> {
     List<TingoField> findAllByTeacher(Teacher teacher);
 }

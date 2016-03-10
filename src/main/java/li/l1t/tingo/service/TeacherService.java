@@ -1,5 +1,6 @@
 package li.l1t.tingo.service;
 
+import li.l1t.tingo.exception.TeacherNotFoundException;
 import li.l1t.tingo.model.Teacher;
 import li.l1t.tingo.model.dto.TeacherDto;
 import li.l1t.tingo.model.repo.TeacherRepository;
@@ -29,7 +30,11 @@ public class TeacherService {
     }
 
     public Teacher getById(int id) {
-        return teacherRepository.findOne(id);
+        Teacher teacher = teacherRepository.findOne(id);
+        if(teacher == null) {
+            throw new TeacherNotFoundException(id);
+        }
+        return teacher;
     }
 
     public TeacherDto toDto(Teacher entity) {
