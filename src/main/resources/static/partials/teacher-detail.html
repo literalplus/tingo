@@ -1,4 +1,11 @@
-<h1>{{detailCtrl.teacher.name}} ({{detailCtrl.teacher.abbreviation}})</h1>
+<h1>
+    {{detailCtrl.teacher.name}}
+    <small>
+        {{detailCtrl.teacher.abbreviation}}
+        -
+        <a ng-click="detailCtrl.addField()">[+]</a>
+    </small>
+</h1>
 
 <div class="alert alert-warning" ng-show="detailCtrl.fields.length == 0">
     Für diesen Lehrer gibt es noch keine Bingofelder!
@@ -7,6 +14,9 @@
 <div class="container-fluid">
     <div class="col-xs-6 col-md-2 tingo-field-tile"
          ng-repeat="field in detailCtrl.fields">
-        {{field.text}}
+        <span ng-hide="!!field.editing">
+            {{field.text}}
+        </span>
+        <textarea ng-show="!!field.editing" ng-value="field.text" title="Bingofeld bearbeiten"></textarea>
     </div>
 </div>
