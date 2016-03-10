@@ -73,7 +73,9 @@ body {
 .tingo-field-tile {
     border: 1px solid #444444;
     height: 8em;
-    text-align: center;
     display: flex;
     align-items: center;
+    justify-content: center;
+    white-space: pre-line;
+    text-align: center;
 }
