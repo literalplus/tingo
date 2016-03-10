@@ -54,9 +54,8 @@ public class FieldController {
         return new FieldsDto(teacherService.toDto(teacher), fields);
     }
 
-    @RequestMapping(value = "/api/field/create", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/field/save", method = RequestMethod.POST)
     public FieldDto createField(@RequestBody FieldDto field) {
-        fieldService.create(field);
-        return field;
+        return fieldService.toDto(fieldService.save(field));
     }
 }

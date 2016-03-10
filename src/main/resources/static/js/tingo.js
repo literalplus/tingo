@@ -71,7 +71,23 @@ var LoginController = function ($stateParams, $rootScope, $location) {
 var TeacherDetailController = function ($http, $stateParams) {
     var ctrl = this;
     this.teacher = {name: '...', abbreviation: '....'};
-    this.fields = {};
+    this.fields = [];
+
+    this.saveField = function (field) {
+        $http.post('/api/field/save', field)
+            .then(function (response) {
+                _.without(ctrl.fields, field);
+                ctrl.fields.push(response.data);
+            }, function (response) {
+                console.warn('Couldn\'t save fields: ');
+                console.warn(response);
+                alert('Fehler beim Speichern: ' + response.data.errorMessage);
+            });
+    };
+
+    this.editField = function (field) {
+        field.editing = true;
+    };
 
     $http.get('/api/field/by/teacher/' + $stateParams.id)
         .success(function (data) {

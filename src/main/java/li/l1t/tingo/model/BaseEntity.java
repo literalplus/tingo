@@ -34,7 +34,7 @@ public class BaseEntity {
     @Column(name = "last_updated")
     private Timestamp lastUpdated;
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 

@@ -8,6 +8,7 @@ package li.l1t.tingo.model.dto;
  */
 public class FieldDto {
     private int id;
+    private int teacherId;
     private String text;
 
     public int getId() {
@@ -24,5 +25,13 @@ public class FieldDto {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public int getTeacherId() {
+        return teacherId;
+    }
+
+    public void setTeacherId(int teacherId) {
+        this.teacherId = teacherId;
     }
 }

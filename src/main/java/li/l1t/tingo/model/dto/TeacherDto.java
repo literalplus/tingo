@@ -11,7 +11,7 @@ public class TeacherDto {
     private String abbreviation;
     private String name;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

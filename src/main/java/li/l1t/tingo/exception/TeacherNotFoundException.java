@@ -7,7 +7,7 @@ package li.l1t.tingo.exception;
  * @since 2016-03-06
  */
 public class TeacherNotFoundException extends JsonPropagatingException {
-    public TeacherNotFoundException(int requestedId) {
+    public TeacherNotFoundException(long requestedId) {
         super("Unknown teacher with id " + requestedId);
     }
 }
