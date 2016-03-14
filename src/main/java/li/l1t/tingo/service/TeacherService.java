@@ -4,7 +4,6 @@ import li.l1t.tingo.exception.TeacherNotFoundException;
 import li.l1t.tingo.model.Teacher;
 import li.l1t.tingo.model.dto.TeacherDto;
 import li.l1t.tingo.model.repo.TeacherRepository;
-import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +15,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class TeacherService {
-    private final DozerBeanMapper dozerBeanMapper;
-    private final TeacherRepository teacherRepository;
-
     @Autowired
-    public TeacherService(DozerBeanMapper dozerBeanMapper, TeacherRepository teacherRepository) {
-        this.dozerBeanMapper = dozerBeanMapper;
-        this.teacherRepository = teacherRepository;
-    }
+    private TeacherRepository teacherRepository;
 
     public Iterable<Teacher> getAllTeachers() {
         return teacherRepository.findAll();
@@ -38,6 +31,10 @@ public class TeacherService {
     }
 
     public TeacherDto toDto(Teacher entity) {
-        return dozerBeanMapper.map(entity, TeacherDto.class);
+        TeacherDto dto = new TeacherDto();
+        dto.setId(entity.getId());
+        dto.setAbbreviation(entity.getAbbreviation());
+        dto.setName(entity.getName());
+        return dto;
     }
 }
