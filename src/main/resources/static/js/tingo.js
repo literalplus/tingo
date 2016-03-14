@@ -74,9 +74,14 @@ var TeacherDetailController = function ($http, $stateParams) {
     this.fields = [];
 
     this.saveField = function (field) {
+        if(field.text.length === 0 || !field.text.trim()) {
+            ctrl.fields = _.without(ctrl.fields, field);
+            return;
+        }
+
         $http.post('/api/field/save', field)
             .then(function (response) {
-                _.without(ctrl.fields, field);
+                ctrl.fields = _.without(ctrl.fields, field);
                 ctrl.fields.push(response.data);
             }, function (response) {
                 console.warn('Couldn\'t save fields: ');
@@ -87,6 +92,10 @@ var TeacherDetailController = function ($http, $stateParams) {
 
     this.editField = function (field) {
         field.editing = true;
+    };
+
+    this.addField = function () {
+        ctrl.fields.push({text: '', teacherId: ctrl.teacher.id, editing: true});
     };
 
     $http.get('/api/field/by/teacher/' + $stateParams.id)

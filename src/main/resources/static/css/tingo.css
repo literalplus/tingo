@@ -7,9 +7,11 @@ html {
     position: relative;
     min-height: 100%;
 }
+
 body {
     margin-bottom: 60px;
 }
+
 .footer {
     position: absolute;
     bottom: 0;
@@ -76,6 +78,19 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.tingo-field-tile span {
     white-space: pre-line;
     text-align: center;
+}
+
+.tingo-field-tile textarea {
+    height: 100%;
+    width: 100%;
+    font-size: inherit;
+}
+
+.tingo-fake-link {
+    cursor: hand;
 }
