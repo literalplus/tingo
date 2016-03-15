@@ -1,5 +1,6 @@
 package li.l1t.tingo.service;
 
+import li.l1t.tingo.exception.FieldNotFoundException;
 import li.l1t.tingo.model.Teacher;
 import li.l1t.tingo.model.TingoField;
 import li.l1t.tingo.model.dto.FieldDto;
@@ -48,6 +49,21 @@ public class FieldService {
         return field;
     }
 
+    public TingoField toEntity(FieldDto dto) {
+        Teacher teacher = teacherService.getById(dto.getTeacherId());
+        TingoField tingoField = new TingoField(teacher, dto.getText());
+        return adaptFromDto(tingoField, dto);
+    }
+
+    public TingoField findById(int fieldId) {
+        TingoField tingoField = fieldRepository.findOne(fieldId);
+        if(tingoField == null) {
+            throw new FieldNotFoundException(fieldId);
+        } else {
+            return tingoField;
+        }
+    }
+
     public TingoField save(FieldDto spec) {
         Teacher teacher = teacherService.getById(spec.getTeacherId());
         TingoField tingoField = fieldRepository.findOne(spec.getId());
@@ -57,5 +73,9 @@ public class FieldService {
             adaptFromDto(tingoField, spec);
         }
         return fieldRepository.save(tingoField);
+    }
+
+    public void delete(TingoField tingoField) {
+        fieldRepository.delete(tingoField);
     }
 }

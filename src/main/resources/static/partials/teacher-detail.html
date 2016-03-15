@@ -13,20 +13,10 @@
 
 <div class="container-fluid">
     <div class="col-xs-6 col-md-2 tingo-field-tile"
-         ng-repeat="field in detailCtrl.fields" uib-popover="testing">
+         ng-repeat="field in detailCtrl.fields" uib-tooltip-template="'/partials/detail-tooltip.html'"
+         tooltip-is-open="!!field.editing" tooltip-trigger="none">
         <span ng-hide="!!field.editing" ng-dblclick="detailCtrl.editField(field)">{{field.text}}</span>
         <div ng-show="!!field.editing">
-            <div class="btn-group btn-group-justified" role="group">
-                <a role="button" class="btn" uib-popover="woa">
-                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                </a>
-                <a role="button" class="btn">
-                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                </a>
-                <a role="button" class="btn">
-                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                </a>
-            </div>
             <textarea ng-dblclick="detailCtrl.saveField(field)"
                       ng-model="field.text" title="Bingofeld bearbeiten"
                       placeholder="Text eingeben..."></textarea>

@@ -72,17 +72,18 @@ var TeacherDetailController = function ($http, $stateParams) {
     var ctrl = this;
     this.teacher = {name: '...', abbreviation: '....'};
     this.fields = [];
+    this.backupField = {};
 
     this.saveField = function (field) {
+        var myIndex = _.indexOf(ctrl.fields, field);
         if(field.text.length === 0 || !field.text.trim()) {
-            ctrl.fields = _.without(ctrl.fields, field);
+            ctrl.fields.splice(myIndex);
             return;
         }
 
         $http.post('/api/field/save', field)
             .then(function (response) {
-                ctrl.fields = _.without(ctrl.fields, field);
-                ctrl.fields.push(response.data);
+                ctrl.fields[myIndex] = response.data;
             }, function (response) {
                 console.warn('Couldn\'t save fields: ');
                 console.warn(response);
@@ -90,12 +91,30 @@ var TeacherDetailController = function ($http, $stateParams) {
             });
     };
 
+    this.uneditField = function (field) {
+        var myIndex = _.indexOf(ctrl.fields, field);
+        ctrl.backupField.editing = false;
+        ctrl.fields[myIndex] = ctrl.backupField;
+    };
+
     this.editField = function (field) {
+        ctrl.backupField = _.clone(field);
         field.editing = true;
     };
 
     this.addField = function () {
         ctrl.fields.push({text: '', teacherId: ctrl.teacher.id, editing: true});
+    };
+
+    this.deleteField = function (field) {
+        $http.post('/api/field/delete', field)
+            .then(function (response) {
+                ctrl.fields = _.without(ctrl.fields, field);
+            }, function (response) {
+                console.warn('Couldn\'t delete field: ');
+                console.warn(response);
+                alert('Fehler beim Löschen: ' + response.data.errorMessage);
+            })
     };
 
     $http.get('/api/field/by/teacher/' + $stateParams.id)

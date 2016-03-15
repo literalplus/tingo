@@ -78,6 +78,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    /*padding-right: 2px;*/ /* Hack so that instead of 6 we have 5 fields in a row */
 }
 
 .tingo-field-tile span {
