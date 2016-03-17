@@ -1,14 +1,22 @@
+import org.codehaus.groovy.control.CompilationUnit
+
 buildscript {
     repositories {
         jcenter()
-        maven { url 'http://repo.spring.io/plugins-release' }
+        maven {
+            url 'http://repo.spring.io/plugins-release'
+        }
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
         mavenCentral()
     }
 
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.3.1.RELEASE")
         classpath("org.springframework.build.gradle:propdeps-plugin:0.0.7")
-        classpath("de.obqo.gradle:gradle-lesscss-plugin:1.0-1.3.3")
+        classpath('com.github.houbie:lesscss-gradle-plugin:1.0.0-less-1.7.0')
+        classpath("com.moowork.gradle:gradle-gulp-plugin:0.10")
     }
 }
 
@@ -21,17 +29,22 @@ apply plugin: 'idea'
 apply plugin: 'propdeps'
 apply plugin: 'propdeps-idea'
 apply plugin: 'lesscss'
+//apply plugin: 'com.moowork.gulp'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+ext.genResDir = "$buildDir/resources"
 
 repositories {
     mavenCentral()
 }
 
+configurations {
+    bootstrap
+}
+
 dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-devtools'
-    //compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-security'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
@@ -47,6 +60,7 @@ dependencies {
     compile group: 'org.webjars', name: 'bootswatch-paper', version: '3.3.5+4'
     compile group: 'org.webjars', name: 'underscorejs', version: '1.8.3'
     compile group: 'org.flywaydb', name: 'flyway-core', version: '3.2.1'
+    bootstrap group: 'org.grails.plugins', name: 'twitter-bootstrap', version: '3.1.1', classifier: 'zip'
 }
 
 compileJava.dependsOn(processResources)
@@ -60,14 +74,54 @@ bootRun {
     addResources = true
 }
 
-lesscss {
-    source = fileTree('src/main/less') {
-        include 'tingo.less'
+//node {
+//    version = '5.0.0'
+//    download = true
+//}
+//
+//gulp_build.dependsOn 'installGulp'
+//gulp_build.dependsOn 'npmInstall'
+//bootRun.dependsOn gulp_build
+processResources.dependsOn 'lesscss'
+
+//lesscss {
+//    source = fileTree('src/main/less') {
+//        include 'tingo.less'
+//    }
+//    dest = 'src/main/resources/static/css'
+//    compress = true
+//}
+
+lessc {
+    destinationDir = "$genResDir/static/css"
+    sourceDir "src/main/less", "$buildDir/bootstrap/web-app/less"
+    include 'bootstrap.less', 'theme.less'
+
+    //the preCompile closure gives us the opportunity to change the options and destination files on a per-css-basis
+    preCompile { FileTreeElement src, CompilationUnit unit ->
+        if (src.name == 'theme.less') {
+            unit.destination = project.file("$genResDir/static/css/bootstrap-theme.css")
+        }
     }
-    dest = 'src/main/resources/static/css'
-    compress = true
 }
 
 processResources {
-    dependsOn 'lesscss'
+    from $genResDir //additional generated resources
+}
+
+task init {
+    dependsOn 'copyBootstrapResources', 'minifyJs', 'createCustomizationFiles', 'createCustomLess', 'createSemanticHtml'
+}
+
+task explodeBootstrap(type: Copy) { task ->
+    //we declared a dependency on bootstrap just like on any other (java) library
+    //here we unzip that dependency
+    from(zipTree(configurations.bootstrap.fileCollection { dep -> dep.name == 'twitter-bootstrap' }.singleFile));
+    into "$buildDir/bootstrap"
+}
+
+task copyBootstrapResources(type: Copy, dependsOn: explodeBootstrap) {
+    from "$buildDir/bootstrap/web-app"
+    into "$genResDir/static/"
+    include 'js/**/*', 'fonts/**/*'
 }

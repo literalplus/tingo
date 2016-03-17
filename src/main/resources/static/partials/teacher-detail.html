@@ -12,7 +12,7 @@
 </div>
 
 <div class="container-fluid">
-    <div class="col-xs-6 col-md-2 tingo-field-tile"
+    <div class="col-xs-6 col-md-2-4 tingo-field-tile"
          ng-repeat="field in detailCtrl.fields" uib-tooltip-template="'/partials/detail-tooltip.html'"
          tooltip-is-open="!!field.editing" tooltip-trigger="none">
         <span ng-hide="!!field.editing" ng-dblclick="detailCtrl.editField(field)">{{field.text}}</span>
