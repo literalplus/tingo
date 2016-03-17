@@ -51,7 +51,7 @@ public class FieldService {
 
     public TingoField toEntity(FieldDto dto) {
         Teacher teacher = teacherService.getById(dto.getTeacherId());
-        TingoField tingoField = new TingoField(teacher, dto.getText());
+        TingoField tingoField = new TingoField(dto.getId(), teacher, dto.getText());
         return adaptFromDto(tingoField, dto);
     }
 

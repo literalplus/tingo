@@ -1,6 +1,6 @@
-/*
- * Tingo main stylesheet.
- */
+@import "../../../node_modules/bootstrap-less/bootstrap/bootstrap";
+@import "../../../node_modules/bootswatch-less/bootswatch/paper/variables";
+@import "../../../node_modules/bootswatch-less/bootswatch/paper/bootswatch";
 
 /* Bootstrap Sticky Footer */
 html {
@@ -9,7 +9,7 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+  margin-bottom: 80px;
 }
 
 .footer {
@@ -94,4 +94,15 @@ body {
 
 .tingo-fake-link {
   cursor: hand;
+}
+
+/* 5 columns of fields - 2.4 * 5 = 12 */
+.col-lg-2-4 {
+  .make-lg-column(2.4)
+}
+.col-md-2-4{
+  .make-md-column(2.4)
+}
+.col-sm-2-4{
+  .make-sm-column(2.4)
 }
