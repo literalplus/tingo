@@ -61,8 +61,9 @@ public class FieldController {
     }
 
     @RequestMapping(value = "/api/field/delete", method = RequestMethod.POST)
-    public void deleteFieldById(@RequestBody FieldDto fieldDto) {
+    public FieldDto deleteFieldById(@RequestBody FieldDto fieldDto) {
         TingoField field = fieldService.toEntity(fieldDto);
         fieldService.delete(field);
+        return fieldService.toDto(field);
     }
 }

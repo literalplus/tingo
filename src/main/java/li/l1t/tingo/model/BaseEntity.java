@@ -34,6 +34,14 @@ public class BaseEntity {
     @Column(name = "last_updated")
     private Timestamp lastUpdated;
 
+    public BaseEntity() {
+
+    }
+
+    public BaseEntity(int id) {
+        this.id = id;
+    }
+
     public int getId() {
         return id;
     }
