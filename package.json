@@ -7,6 +7,7 @@
     "grunt-contrib-nodeunit": "~0.4.1",
     "grunt-contrib-uglify": "~0.5.0",
     "grunt-contrib-jshint": "latest",
+    "grunt-contrib-concat": "latest",
     "jshint-stylish": "latest",
     "grunt-contrib-less": "latest",
     "grunt-contrib-cssmin": "latest",
