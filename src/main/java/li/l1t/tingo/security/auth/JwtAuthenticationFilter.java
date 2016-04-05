@@ -50,7 +50,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
         try {
             userDetails = tokenHandler.parseUserFromToken(jwtToken);
         } catch (SignatureException e) { //Generated before server restart - Signature doesn't match
-            return null;
+            throw new InsufficientAuthenticationException("Invalid JWT token");
         }
 
         UserAuthentication authentication = new UserAuthentication(userDetails);
