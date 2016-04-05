@@ -1,7 +1,7 @@
-<div class="alert alert-info" ng-show="authenticated">
+<div class="alert alert-info" ng-show="isAuthenticated()">
     Du bist bereits eingeloggt! <a ng-click="loginCtrl.back()">Zurück</a>
 </div>
-<div ng-hide="authenticated">
+<div ng-hide="isAuthenticated()">
     <div class="alert alert-danger" ng-show="!!returnto">
         Du musst dich zuerst einloggen!
     </div>

@@ -308,13 +308,9 @@ tingoApp.factory('AuthService', ['$http', '$rootScope', '$location', 'AUTH_EVENT
         };
 
         authService.logout = function () {
-            //$http.post('logout', {}).success(function () {
             resetAuth();
             $location.path('/');
             $rootScope.$broadcast(AUTH_EVENTS.logout);
-            //}).error(function () {
-            //    resetAuth();
-            //});
         };
 
         authService.register = function (credentials) {
@@ -328,11 +324,11 @@ tingoApp.factory('AuthService', ['$http', '$rootScope', '$location', 'AUTH_EVENT
             });
         };
 
-        authService.isAuthenticated = TokenService.hasToken;
+        authService.isAuthenticated = function () {
+            return authService.authenticated;
+        };
 
         authService.runWhenAuthenticated = function (callback) {
-            console.info("runWhenAuthenticated: " + authService);
-            console.info(callback);
             if (!callback) {
                 return;
             }
@@ -354,7 +350,6 @@ tingoApp.factory('AuthService', ['$http', '$rootScope', '$location', 'AUTH_EVENT
 
         authService.setToken = function (token) {
             authService.token = token;
-            console.info("setting token: " + token);
             if (token === null) {
                 authService.username = null;
                 TokenService.setToken(null);
@@ -369,6 +364,8 @@ tingoApp.factory('AuthService', ['$http', '$rootScope', '$location', 'AUTH_EVENT
         };
 
         $rootScope.isAuthenticated = authService.isAuthenticated;
+
+        setAuth(TokenService.getToken());
 
         return authService;
     }]);

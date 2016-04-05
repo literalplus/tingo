@@ -1,4 +1,4 @@
-<div ng-hide="authenticated" xmlns="http://www.w3.org/1999/html">
+<div ng-hide="isAuthenticated()" xmlns="http://www.w3.org/1999/html">
     <div class="pull-right image-margin">
         <img class="img-responsive" src="https://placekitten.com/510/300"/>
         Inspirierendes Bild einer cuten Katze, damit der Besucher Positives<br/>
@@ -15,7 +15,7 @@
     </div>
 </div>
 
-<div ng-show="authenticated">
+<div ng-show="isAuthenticated()">
     <div class="jumbotron">
         <h1>Eine vollkommen neue Erfahrung</h1>
         <p>
