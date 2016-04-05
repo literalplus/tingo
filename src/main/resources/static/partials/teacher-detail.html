@@ -1,25 +1,31 @@
-<h1>
-    {{detailCtrl.teacher.name}}
-    <small>
-        {{detailCtrl.teacher.abbreviation}}
-        -
-        <a ng-click="detailCtrl.addField()" ng-show="detailCtrl.teacher.id" class="tingo-fake-link">[+]</a>
-    </small>
-</h1>
-
-<div class="alert alert-warning" ng-show="detailCtrl.fields.length == 0">
-    Für diesen Lehrer gibt es noch keine Bingofelder!
+<div class="alert alert-error" ng-hide="isAuthenticated()">
+    Du bist nicht eingeloggt! <a ui-sref="login">Login</a>
 </div>
 
-<div class="container-fluid">
-    <div class="col-xs-6 col-md-2-4 tingo-field-tile"
-         ng-repeat="field in detailCtrl.fields" uib-tooltip-template="'/partials/detail-tooltip.html'"
-         tooltip-is-open="!!field.editing" tooltip-trigger="none">
-        <span ng-hide="!!field.editing" ng-dblclick="detailCtrl.editField(field)">{{field.text}}</span>
-        <div ng-show="!!field.editing">
+<div ng-show="isAuthenticated()">
+    <h1>
+        {{detailCtrl.teacher.name}}
+        <small>
+            {{detailCtrl.teacher.abbreviation}}
+            -
+            <a ng-click="detailCtrl.addField()" ng-show="detailCtrl.teacher.id" class="tingo-fake-link">[+]</a>
+        </small>
+    </h1>
+
+    <div class="alert alert-warning" ng-show="detailCtrl.fields.length == 0">
+        Für diesen Lehrer gibt es noch keine Bingofelder!
+    </div>
+
+    <div class="container-fluid">
+        <div class="col-xs-6 col-md-2-4 tingo-field-tile"
+             ng-repeat="field in detailCtrl.fields" uib-tooltip-template="'/partials/detail-tooltip.html'"
+             tooltip-is-open="!!field.editing" tooltip-trigger="none">
+            <span ng-hide="!!field.editing" ng-dblclick="detailCtrl.editField(field)">{{field.text}}</span>
+            <div ng-show="!!field.editing">
             <textarea ng-dblclick="detailCtrl.saveField(field)"
                       ng-model="field.text" title="Bingofeld bearbeiten"
                       placeholder="Text eingeben..."></textarea>
+            </div>
         </div>
     </div>
 </div>
