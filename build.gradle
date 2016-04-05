@@ -72,7 +72,7 @@ bootRun {
 }
 
 node {
-    version = '0.10.22'
+    version = '5.10.0'
     download = true
 }
 

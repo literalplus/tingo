@@ -1,6 +1,7 @@
 {
   "name": "tingo",
   "version": "0.0.1",
+  "license": "Apache-2.0",
   "devDependencies": {
     "grunt": "~0.4.5",
     "grunt-contrib-nodeunit": "~0.4.1",
