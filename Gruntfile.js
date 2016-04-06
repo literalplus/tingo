@@ -60,6 +60,14 @@ module.exports = function (grunt) {
                     files: 'src/main/js/**.js',
                     tasks: ['jshint', 'uglify']
                 }
+            },
+            
+            copy: {
+                bootstrap_fonts: {
+                    expand: true,
+                    src: 'node_modules/bootstrap-less/fonts/**',
+                    dest: 'build/resources/static/fonts/'
+                }
             }
         }
     );
@@ -71,9 +79,10 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-copy');
 
 // Default task(s).
-    grunt.registerTask('build', ['jshint', 'concat', 'uglify', 'less', 'cssmin']);
+    grunt.registerTask('build', ['jshint', 'concat', 'uglify', 'less', 'cssmin', 'copy']);
     grunt.registerTask('watch', ['watch']);
 
 }
