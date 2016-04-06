@@ -66,7 +66,8 @@ module.exports = function (grunt) {
                 bootstrap_fonts: {
                     expand: true,
                     src: 'node_modules/bootstrap-less/fonts/**',
-                    dest: 'build/resources/static/fonts/'
+                    dest: 'build/resources/static/fonts/',
+                    flatten: true
                 }
             }
         }
