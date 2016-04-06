@@ -145,25 +145,28 @@ var NavDataController = ['$http', 'AuthService',
 
 var tingoApp = angular.module('tingo', ['ui.router', 'ui.bootstrap']);
 
-tingoApp.factory('AuthInterceptor', ['$q', 'TokenService', function ($q, TokenService) {
-    var authInterceptor = {};
+tingoApp.factory('AuthInterceptor', ['$q', 'TokenService', '$location',
+    function ($q, TokenService, $location) {
+        var authInterceptor = {};
 
-    authInterceptor.request = function (config) {
-        if (TokenService.hasToken()) {
-            config.headers.Authorization = 'Bearer ' + TokenService.getToken();
-        }
-        return config;
-    };
+        authInterceptor.request = function (config) {
+            if (TokenService.hasToken()) {
+                config.headers.Authorization = 'Bearer ' + TokenService.getToken();
+            }
+            return config;
+        };
 
-    authInterceptor.responseError = function (response) {
-        if (response.status === 401) {
-            TokenService.setToken(null);
-        }
-        return $q.reject(response);
-    };
+        authInterceptor.responseError = function (response) {
+            if (response.status === 401) {
+                console.info("401 encountered");
+                TokenService.setToken(null);
+                $location.path('/login');
+            }
+            return $q.reject(response);
+        };
 
-    return authInterceptor;
-}]);
+        return authInterceptor;
+    }]);
 
 tingoApp.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryProvider', '$httpProvider',
     function ($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvider, $httpProvider) {
