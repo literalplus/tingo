@@ -9,9 +9,12 @@ import li.l1t.tingo.model.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.util.Validate;
+
+import java.security.Principal;
 
 /**
- * Service handling user registration.
+ * Service handling principal registration.
  *
  * @author <a href="http://xxyy.github.io/">xxyy</a>
  * @since 2016-02-21
@@ -32,17 +35,24 @@ public class UserService {
     }
 
     public User createUser(String username, String password, String registerSecret) {
-        System.out.println("Secret: "+registerSecret);
-        if(!tingoConfiguration.getRegisterSecret().equalsIgnoreCase(registerSecret)) {
+        System.out.println("Secret: " + registerSecret);
+        if (!tingoConfiguration.getRegisterSecret().equalsIgnoreCase(registerSecret)) {
             throw new JsonPropagatingException("Falscher Geheimcode!");
         }
 
-        if(userRepository.findByName(username) != null) {
+        if (userRepository.findByName(username) != null) {
             throw new JsonPropagatingException("Benutzername schon vergeben!");
         }
 
         User user = userRepository.save(new User(username, passwordEncoder.encode(password), true));
         authorityRepository.save(new UserAuthority(user.getName(), "default"));
+        return user;
+    }
+
+    public User fromPrincipal(Principal principal) {
+        Validate.notNull(principal, "principal");
+        User user = userRepository.findByName(principal.getName());
+        Validate.notNull(user, "No user found for name " + principal.getName());
         return user;
     }
 }

@@ -28,6 +28,10 @@ public class TingoField extends BaseEntity {
     @Length(max = 256)
     private String text;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "creator_name", updatable = false)
+    private User creator;
+
     protected TingoField() { }
 
     public TingoField(Teacher teacher, String text) {
@@ -49,6 +53,14 @@ public class TingoField extends BaseEntity {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public User getCreator() {
+        return creator;
+    }
+
+    public void setCreator(User creator) {
+        this.creator = creator;
     }
 
     @Override

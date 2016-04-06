@@ -9,6 +9,7 @@ import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -24,6 +25,8 @@ public class FieldService {
     private FieldRepository fieldRepository;
     @Autowired
     private TeacherService teacherService;
+    @Autowired
+    private UserService userService;
 
     public List<TingoField> getAllFieldsByTeacher(Teacher teacher) {
         return fieldRepository.findAllByTeacher(teacher);
@@ -65,10 +68,17 @@ public class FieldService {
     }
 
     public TingoField save(FieldDto spec) {
+        return save(spec, null);
+    }
+
+    public TingoField save(FieldDto spec, Principal user) {
         Teacher teacher = teacherService.getById(spec.getTeacherId());
         TingoField tingoField = fieldRepository.findOne(spec.getId());
         if (tingoField == null) {
             tingoField = new TingoField(teacher, spec.getText());
+            if(user != null) {
+                tingoField.setCreator(userService.fromPrincipal(user));
+            }
         } else {
             adaptFromDto(tingoField, spec);
         }

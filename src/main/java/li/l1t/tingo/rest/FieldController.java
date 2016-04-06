@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,8 +57,8 @@ public class FieldController {
     }
 
     @RequestMapping(value = "/api/field/save", method = RequestMethod.POST)
-    public FieldDto createField(@RequestBody FieldDto field) {
-        return fieldService.toDto(fieldService.save(field));
+    public FieldDto createField(@RequestBody FieldDto field, Principal user) {
+        return fieldService.toDto(fieldService.save(field, user));
     }
 
     @RequestMapping(value = "/api/field/delete", method = RequestMethod.POST)
