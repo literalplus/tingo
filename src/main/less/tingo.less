@@ -106,3 +106,10 @@ body {
 .col-sm-2-4{
   .make-sm-column(2.4)
 }
+
+/* Simulate large grid for printing teacher detail page */
+@media print {
+  .col-xs-6 {
+    .col-lg-2-4
+  }
+}
