@@ -1,0 +1,12 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Fehler | Tingo</title>
+</head>
+<body>
+<!--/*@thymesVar id="errorCode" type="înt"*/-->
+<!--/*@thymesVar id="errorType" type="java.lang.String"*/-->
+<h1 th:text="${errorCode}">500</h1>
+<p th:text="${errorType}">java.lang.NullPointerException</p>
+</body>
+</html>
