@@ -49,7 +49,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
         if (header != null && header.startsWith(BEARER_AUTHENTICATION)) {
             jwtToken = header.substring(BEARER_AUTHENTICATION.length());
         }
-        if(jwtToken == null || jwtToken.isEmpty()) {
+        if((jwtToken == null || jwtToken.isEmpty()) && request.getCookies() != null) {
             Cookie cookie = Arrays.stream(request.getCookies())
                     .filter(c -> c.getName().equals("tingo-token-cookie"))
                     .findFirst().orElse(null);
