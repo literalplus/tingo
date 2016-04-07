@@ -53,7 +53,9 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
             Cookie cookie = Arrays.stream(request.getCookies())
                     .filter(c -> c.getName().equals("tingo-token-cookie"))
                     .findFirst().orElse(null);
-            jwtToken = cookie.getValue();
+            if(cookie != null) {
+                jwtToken = cookie.getValue();
+            }
         }
         if(jwtToken == null || jwtToken.isEmpty()) {
             throw new InsufficientAuthenticationException("Missing JWT token");
