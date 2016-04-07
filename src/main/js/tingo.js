@@ -160,6 +160,7 @@ tingoApp.factory('AuthInterceptor', ['$q', 'TokenService', '$location',
             if (response.status === 401) {
                 console.info("401 encountered");
                 TokenService.setToken(null);
+                $rootScope.returnto = $location.path(); //save current path for login back
                 $location.path('/login');
             }
             return $q.reject(response);
