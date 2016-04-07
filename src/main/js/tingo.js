@@ -41,7 +41,8 @@ var HomeController = ['$http', '$rootScope', 'AuthService',
         var ctrl = this;
         this.teachers = {};
 
-        AuthService.runWhenAuthenticated(function () {
+        AuthService.
+        (function () {
             $http.get('/api/teacher/list')
                 .success(function (data) {
                     for (var i = 0; i < data.length; i++) {
@@ -92,16 +93,19 @@ var NavDataController = ['$http', 'AuthService',
         this.teachers = {};
         this.teachersLoaded = false;
 
-        AuthService.runWhenAuthenticated(function () {
+        AuthService.onAuthChange(function () {
             $http.get('/api/teacher/list')
                 .success(function (data) {
                     ctrl.teachers = data;
                     ctrl.teachersLoaded = true;
                 });
+        }, function () {
+            ctrl.teachersLoaded = false;
+            ctrl.teachers = {};
         });
     }];
 
-var tingoApp = angular.module('tingo', ['ui.router', 'ui.bootstrap','ngCookies']);
+var tingoApp = angular.module('tingo', ['ui.router', 'ui.bootstrap', 'ngCookies']);
 
 tingoApp.factory('AuthInterceptor', ['$q', 'TokenService', '$location', '$rootScope',
     function ($q, TokenService, $location, $rootScope) {
@@ -375,15 +379,24 @@ tingoApp.factory('AuthService', ['$http', '$rootScope', '$location', 'AUTH_EVENT
             return TokenService.hasToken() && authService.authenticated;
         };
 
-        authService.runWhenAuthenticated = function (callback) {
-            if (!callback) {
-                return;
+        authService.runWhenAuthenticated = function (callback) { //this is kind of deprecated, use #onAuthChange(...)
+            onAuthChange(callback, null);
+        };
+
+        authService.onAuthChange = function (onLogin, onLogout) {
+            if (onLogin) {
+                if (authService.isAuthenticated()) {
+                    onLogin();
+                }
+                //Call again on re-authentication
+                $rootScope.$on(AUTH_EVENTS.login_success, onLogin);
             }
 
-            if (authService.isAuthenticated()) {
-                callback();
-            } else {
-                $rootScope.$on(AUTH_EVENTS.login_success, callback);
+            if (onLogout) {
+                if(!authService.isAuthenticated()) {
+                    onLogout();
+                }
+                $rootScope.$on(AUTH_EVENTS.logout, onLogout);
             }
         };
 
