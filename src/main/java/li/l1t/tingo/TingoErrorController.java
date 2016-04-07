@@ -36,10 +36,10 @@ public class TingoErrorController implements ErrorController {
 
         switch(errorCode) {
             case 401:
-                return "error/401.html";
+                return "error/401";
             case 0:
             default:
-                return "error/generic.html";
+                return "error/generic";
         }
     }
 }
