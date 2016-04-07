@@ -328,7 +328,7 @@ tingoApp.factory('AuthService', ['$http', '$rootScope', '$location', 'AUTH_EVENT
         };
 
         authService.isAuthenticated = function () {
-            return authService.authenticated;
+            return TokenService.hasToken() && authService.authenticated;
         };
 
         authService.runWhenAuthenticated = function (callback) {
