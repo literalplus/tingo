@@ -75,7 +75,7 @@ var TeacherDetailController = ['TeacherDetailService', '$stateParams',
     function (TeacherDetailService, $stateParams) {
         this.getFields = TeacherDetailService.getFields;
         this.getTeacher = TeacherDetailService.getTeacher;
-        
+
         this.saveField = TeacherDetailService.saveField;
         this.uneditField = TeacherDetailService.uneditField;
         this.editField = TeacherDetailService.editField;
@@ -101,10 +101,10 @@ var NavDataController = ['$http', 'AuthService',
         });
     }];
 
-var tingoApp = angular.module('tingo', ['ui.router', 'ui.bootstrap']);
+var tingoApp = angular.module('tingo', ['ui.router', 'ui.bootstrap','ngCookies']);
 
-tingoApp.factory('AuthInterceptor', ['$q', 'TokenService', '$location',
-    function ($q, TokenService, $location) {
+tingoApp.factory('AuthInterceptor', ['$q', 'TokenService', '$location', '$rootScope',
+    function ($q, TokenService, $location, $rootScope) {
         var authInterceptor = {};
 
         authInterceptor.request = function (config) {
@@ -179,13 +179,13 @@ tingoApp.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryProv
 
 tingoApp.factory('TeacherDetailService', ['$http',
     function ($http) {
-        var detailService = this;
-        this.teacher = {name: 'Loading..', abbreviation: '....'};
-        this.fields = [];
+        var detailService = {};
+        detailService.teacher = {name: 'Loading..', abbreviation: '....'};
+        detailService.fields = [];
         var fetched = false;
         var backupField = {};
 
-        this.saveField = function (field) {
+        detailService.saveField = function (field) {
             var myIndex = _.indexOf(detailService.fields, field);
             if (field.text.length === 0 || !field.text.trim()) {
                 detailService.fields.splice(myIndex);
@@ -202,22 +202,22 @@ tingoApp.factory('TeacherDetailService', ['$http',
                 });
         };
 
-        this.uneditField = function (field) {
+        detailService.uneditField = function (field) {
             var myIndex = _.indexOf(detailService.fields, field);
             backupField.editing = false;
             detailService.fields[myIndex] = backupField;
         };
 
-        this.editField = function (field) {
+        detailService.editField = function (field) {
             backupField = _.clone(field);
             field.editing = true;
         };
 
-        this.addField = function () {
+        detailService.addField = function () {
             detailService.fields.push({text: '', teacherId: detailService.teacher.id, editing: true});
         };
 
-        this.deleteField = function (field) {
+        detailService.deleteField = function (field) {
             $http.post('/api/field/delete', field)
                 .then(function (response) {
                     detailService.fields = _.without(detailService.fields, field);
@@ -228,7 +228,7 @@ tingoApp.factory('TeacherDetailService', ['$http',
                 });
         };
 
-        this.fetchTeacher = function (id) {
+        detailService.fetchTeacher = function (id) {
             fetched = false;
             $http.get('/api/field/by/teacher/' + id)
                 .success(function (data) {
@@ -239,49 +239,59 @@ tingoApp.factory('TeacherDetailService', ['$http',
         };
 
         // Getters and Setters
-        this.isFetched = function () {
+        detailService.isFetched = function () {
             return fetched;
         };
 
-        this.getFields = function () {
+        detailService.getFields = function () {
             return detailService.fields;
         };
 
-        this.getTeacher = function () {
+        detailService.getTeacher = function () {
             return detailService.teacher;
-        }
+        };
+
+        return detailService;
     }]);
 
-tingoApp.factory('TokenService', ['$window', function ($window) {
-    var tokenService = {};
+tingoApp.factory('TokenService', ['$window', '$cookies',
+    function ($window, $cookies) {
+        var tokenService = {};
+        var token = null;
+        var cookieOpts = {
+            path: '/',
+            //secure: true, //doesn't work with local HTTP-only debug; TODO
+            expires: new Date(new Date().getTime() + (1000 * 60 * 60 * 24 * 15)) /* 15 days */
+        };
 
-    var token = null;
+        tokenService.setToken = function (newToken) {
+            token = newToken;
 
-    tokenService.setToken = function (newToken) {
-        token = newToken;
+            if (!!token) {
+                $window.localStorage.setItem('tingo-token', token);
+                $cookies.put('tingo-token-cookie', token, cookieOpts);
 
-        if (!!token) {
-            $window.localStorage.setItem('tingo-token', token);
-        } else {
-            $window.localStorage.removeItem('tingo-token');
+            } else {
+                $window.localStorage.removeItem('tingo-token');
+                $cookies.remove('tingo-token-cookie', cookieOpts);
+            }
+        };
+
+        tokenService.getToken = function () {
+            return token;
+        };
+
+        tokenService.hasToken = function () {
+            return !!token;
+        };
+
+        var storedToken = $window.localStorage.getItem('tingo-token');
+        if (!!storedToken) {
+            token = storedToken;
         }
-    };
 
-    tokenService.getToken = function () {
-        return token;
-    };
-
-    tokenService.hasToken = function () {
-        return !!token;
-    };
-
-    var storedToken = $window.localStorage.getItem('tingo-token');
-    if (!!storedToken) {
-        token = storedToken;
-    }
-
-    return tokenService;
-}]);
+        return tokenService;
+    }]);
 
 tingoApp.factory('AuthService', ['$http', '$rootScope', '$location', 'AUTH_EVENTS', '$window', 'TokenService',
     function ($http, $rootScope, $location, AUTH_EVENTS, $window, TokenService) {

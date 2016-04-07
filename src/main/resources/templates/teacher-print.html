@@ -1,0 +1,35 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Tingofeld drucken | Tingo</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta charset="utf-8"/>
+    <!--suppress HtmlUnknownTarget -->
+    <link rel="stylesheet" href="/css/tingo.min.css"/>
+</head>
+
+<body>
+<!--/*@thymesVar id="teacher" type="li.l1t.tingo.model.Teacher"*/-->
+<!--/*@thymesVar id="fields" type="java.util.List<li.l1t.tingo.model.TingoField>"*/-->
+<div>
+    <div>
+        <h1>
+            <span th:text="${teacher.getName()}"></span>
+            <small th:text="${teacher.getAbbreviation()}"></small>
+        </h1>
+
+        <span th:if="${fields.isEmpty()}">
+            Für diesen Lehrer gibt es (noch) keine Bingofelder.
+        </span>
+
+        <div class="container-fluid">
+            <div class="col-xs-2-4 tingo-field-tile"
+                 th:each="field : ${fields}">
+                <span th:text="${field.getText()}"></span>
+            </div>
+        </div>
+    </div>
+
+</div> <!-- /div[ng-controller=navCtrl] -->
+</body>
+</html>

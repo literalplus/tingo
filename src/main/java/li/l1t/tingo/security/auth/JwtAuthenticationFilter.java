@@ -10,9 +10,11 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Request filter that checks JWT tokens on requests to secured pages.
@@ -23,8 +25,10 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     private static final String BEARER_AUTHENTICATION = "Bearer ";
     private final TokenHandler tokenHandler;
+
     public JwtAuthenticationFilter(TokenHandler tokenHandler) {
-        super("/api/**");
+        super(request -> request.getRequestURI().startsWith("/api") ||
+                request.getRequestURI().startsWith("/secure"));
         this.tokenHandler = tokenHandler;
 
         //Do nothing on authentication since we authenticate every request
@@ -40,12 +44,21 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response)
             throws AuthenticationException, IOException, ServletException {
+        String jwtToken = null;
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (header == null || !header.startsWith(BEARER_AUTHENTICATION)){
+        if (header != null && header.startsWith(BEARER_AUTHENTICATION)) {
+            jwtToken = header.substring(BEARER_AUTHENTICATION.length());
+        }
+        if(jwtToken == null || jwtToken.isEmpty()) {
+            Cookie cookie = Arrays.stream(request.getCookies())
+                    .filter(c -> c.getName().equals("tingo-token-cookie"))
+                    .findFirst().orElse(null);
+            jwtToken = cookie.getValue();
+        }
+        if(jwtToken == null || jwtToken.isEmpty()) {
             throw new InsufficientAuthenticationException("Missing JWT token");
         }
 
-        String jwtToken = header.substring(BEARER_AUTHENTICATION.length());
         UserDetails userDetails;
         try {
             userDetails = tokenHandler.parseUserFromToken(jwtToken);
