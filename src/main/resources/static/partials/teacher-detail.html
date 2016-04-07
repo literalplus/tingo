@@ -23,8 +23,16 @@
             </small>
         </h1>
 
-        <div class="alert alert-warning" ng-show="detailCtrl.getFields().length == 0">
-            Für diesen Lehrer gibt es noch keine Bingofelder!
+        <div class="alert alert-info" ng-show="detailCtrl.getFields().length < 25">
+            Die optimale Anzahl an Tingofeldern ist 5*5. F&uuml;r diese Lehrperson fehlen noch
+            {{25 - detailCtrl.getFields().length}} Felder.
+        </div>
+
+        <div class="alert alert-info" ng-show="detailCtrl.getFields().length > 25">
+            Die optimale Anzahl an Tingofeldern ist 5*5. F&uuml;r diese Lehrperson gibt es
+            {{detailCtrl.getFields().length - 25}} Felder mehr.
+            Daher werden immer nur 25 zuf&auml;llig ausgew&auml;hlte Felder gedruckt werden. (was die Schwierigkeit
+            des Spiels erhöht)
         </div>
 
         <div class="container-fluid">
