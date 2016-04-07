@@ -71,61 +71,19 @@ var LoginController = ['$stateParams', '$rootScope', '$location',
         };
     }];
 
-var TeacherDetailController = ['$http', '$stateParams',
-    function ($http, $stateParams) {
-        var ctrl = this;
-        this.teacher = {name: '...', abbreviation: '....'};
-        this.fields = [];
-        this.backupField = {};
+var TeacherDetailController = ['TeacherDetailService', '$stateParams',
+    function (TeacherDetailService, $stateParams) {
+        this.getFields = TeacherDetailService.getFields;
+        this.getTeacher = TeacherDetailService.getTeacher;
+        
+        this.saveField = TeacherDetailService.saveField;
+        this.uneditField = TeacherDetailService.uneditField;
+        this.editField = TeacherDetailService.editField;
+        this.addField = TeacherDetailService.addField;
+        this.deleteField = TeacherDetailService.deleteField;
+        this.isFetched = TeacherDetailService.isFetched;
 
-        this.saveField = function (field) {
-            var myIndex = _.indexOf(ctrl.fields, field);
-            if (field.text.length === 0 || !field.text.trim()) {
-                ctrl.fields.splice(myIndex);
-                return;
-            }
-
-            $http.post('/api/field/save', field)
-                .then(function (response) {
-                    ctrl.fields[myIndex] = response.data;
-                }, function (response) {
-                    console.warn('Couldn\'t save fields: ');
-                    console.warn(response);
-                    alert('Fehler beim Speichern: ' + response.data.errorMessage);
-                });
-        };
-
-        this.uneditField = function (field) {
-            var myIndex = _.indexOf(ctrl.fields, field);
-            ctrl.backupField.editing = false;
-            ctrl.fields[myIndex] = ctrl.backupField;
-        };
-
-        this.editField = function (field) {
-            ctrl.backupField = _.clone(field);
-            field.editing = true;
-        };
-
-        this.addField = function () {
-            ctrl.fields.push({text: '', teacherId: ctrl.teacher.id, editing: true});
-        };
-
-        this.deleteField = function (field) {
-            $http.post('/api/field/delete', field)
-                .then(function (response) {
-                    ctrl.fields = _.without(ctrl.fields, field);
-                }, function (response) {
-                    console.warn('Couldn\'t delete field: ');
-                    console.warn(response);
-                    alert('Fehler beim Löschen: ' + response.data.errorMessage);
-                });
-        };
-
-        $http.get('/api/field/by/teacher/' + $stateParams.id)
-            .success(function (data) {
-                ctrl.teacher = data.teacher;
-                ctrl.fields = data.fields;
-            });
+        TeacherDetailService.fetchTeacher($stateParams.id);
     }];
 
 var NavDataController = ['$http', 'AuthService',
@@ -217,6 +175,81 @@ tingoApp.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryProv
         //Prevent Spring Security from displaying auth dialog, we control authentication ourselves!
         $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
         $httpProvider.interceptors.push('AuthInterceptor');
+    }]);
+
+tingoApp.factory('TeacherDetailService', ['$http',
+    function ($http) {
+        var detailService = this;
+        this.teacher = {name: 'Loading..', abbreviation: '....'};
+        this.fields = [];
+        var fetched = false;
+        var backupField = {};
+
+        this.saveField = function (field) {
+            var myIndex = _.indexOf(detailService.fields, field);
+            if (field.text.length === 0 || !field.text.trim()) {
+                detailService.fields.splice(myIndex);
+                return;
+            }
+
+            $http.post('/api/field/save', field)
+                .then(function (response) {
+                    detailService.fields[myIndex] = response.data;
+                }, function (response) {
+                    console.warn('Couldn\'t save fields: ');
+                    console.warn(response);
+                    alert('Fehler beim Speichern: ' + response.data.errorMessage);
+                });
+        };
+
+        this.uneditField = function (field) {
+            var myIndex = _.indexOf(detailService.fields, field);
+            backupField.editing = false;
+            detailService.fields[myIndex] = backupField;
+        };
+
+        this.editField = function (field) {
+            backupField = _.clone(field);
+            field.editing = true;
+        };
+
+        this.addField = function () {
+            detailService.fields.push({text: '', teacherId: detailService.teacher.id, editing: true});
+        };
+
+        this.deleteField = function (field) {
+            $http.post('/api/field/delete', field)
+                .then(function (response) {
+                    detailService.fields = _.without(detailService.fields, field);
+                }, function (response) {
+                    console.warn('Couldn\'t delete field: ');
+                    console.warn(response);
+                    alert('Fehler beim Löschen: ' + response.data.errorMessage);
+                });
+        };
+
+        this.fetchTeacher = function (id) {
+            fetched = false;
+            $http.get('/api/field/by/teacher/' + id)
+                .success(function (data) {
+                    detailService.teacher = data.teacher;
+                    detailService.fields = data.fields;
+                    fetched = true;
+                });
+        };
+
+        // Getters and Setters
+        this.isFetched = function () {
+            return fetched;
+        };
+
+        this.getFields = function () {
+            return detailService.fields;
+        };
+
+        this.getTeacher = function () {
+            return detailService.teacher;
+        }
     }]);
 
 tingoApp.factory('TokenService', ['$window', function ($window) {
