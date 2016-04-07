@@ -8,7 +8,11 @@
         <small>
             {{detailCtrl.teacher.abbreviation}}
             -
-            <a ng-click="detailCtrl.addField()" ng-show="detailCtrl.teacher.id" class="tingo-fake-link">[+]</a>
+            <a ng-click="detailCtrl.addField()" ng-show="detailCtrl.teacher.id"
+               title="Neues Feld" class="tingo-fake-link">[+]</a>
+            &nbsp;
+            <a ng-show="detailCtrl.teacher.id"
+               title="Doppelklicke auf ein Feld, um es zu bearbeiten" class="tingo-fake-link">[?]</a>
         </small>
     </h1>
 
