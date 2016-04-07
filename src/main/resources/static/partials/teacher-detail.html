@@ -10,13 +10,16 @@
     <div ng-show="detailCtrl.isFetched()">
         <h1>
             {{detailCtrl.getTeacher().name}}
-            <small>
+            <small ng-show="detailCtrl.getTeacher().id">
                 {{detailCtrl.getTeacher().abbreviation}}
-                -
-                <a ng-click="detailCtrl.addField()" ng-show="detailCtrl.getTeacher().id"
-                   title="Neues Feld" class="tingo-fake-link">[+]</a>
-                <abbr ng-show="detailCtrl.getTeacher().id"
-                      title="Doppelklicke auf ein Feld, um es zu bearbeiten">[?]</abbr>
+                <span class="tingo-teacher-actions">
+                    <a ng-click="detailCtrl.addField()"
+                       title="Neues Feld" class="glyphicon glyphicon-plus"></a>
+                    <a onclick="alert('Doppelklicke auf ein Feld, um es zu bearbeiten.')"
+                       title="Doppelklicke auf ein Feld, um es zu bearbeiten" class="glyphicon glyphicon-edit"></a>
+                    <a ng-href="{{'/secure/print/teacher/by/id/' + detailCtrl.getTeacher().id}}"
+                       title="Felder drucken..." class="glyphicon glyphicon-plus"></a>
+                </span>
             </small>
         </h1>
 
