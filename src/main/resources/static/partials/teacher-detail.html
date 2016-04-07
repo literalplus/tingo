@@ -9,9 +9,9 @@
 
     <div ng-show="detailCtrl.isFetched()">
         <h1>
-            {{detailCtrl.teacher.name}}
+            {{detailCtrl.getTeacher().name}}
             <small>
-                {{detailCtrl.teacher.abbreviation}}
+                {{detailCtrl.getTeacher().abbreviation}}
                 -
                 <a ng-click="detailCtrl.addField()" ng-show="detailCtrl.getTeacher().id"
                    title="Neues Feld" class="tingo-fake-link">[+]</a>
