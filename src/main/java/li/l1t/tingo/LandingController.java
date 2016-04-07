@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * Controller for serving Tingo's main template, aka the AngularJS client.
  *
@@ -40,21 +38,5 @@ public class LandingController {
         model.addAttribute("teacher", teacher);
         model.addAttribute("fields", fieldService.getAllFieldsByTeacher(teacher));
         return "teacher-print";
-    }
-
-    @RequestMapping(value = "/error", method = RequestMethod.GET)
-    public String error(HttpServletRequest request, Model model) {
-        Object errCodeObj = request.getAttribute("javax.servlet.error.status_code");
-        int errorCode = errCodeObj == null ? 0 : (int) errCodeObj;
-        model.addAttribute("errorCode", errCodeObj);
-        model.addAttribute("errorType", request.getAttribute("javax.servlet.error.exception"));
-
-        switch(errorCode) {
-            case 401:
-                return "error/401.html";
-            case 0:
-            default:
-                return "error/generic.html";
-        }
     }
 }
