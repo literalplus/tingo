@@ -41,8 +41,7 @@ var HomeController = ['$http', '$rootScope', 'AuthService',
         var ctrl = this;
         this.teachers = {};
 
-        AuthService.
-        (function () {
+        AuthService.runWhenAuthenticated(function () {
             $http.get('/api/teacher/list')
                 .success(function (data) {
                     for (var i = 0; i < data.length; i++) {
