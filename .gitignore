@@ -42,3 +42,6 @@ hs_err_pid*
 # Ignore database configuration
 /application.yml
 /application-*.yml
+
+# Node modules
+node_modules/
