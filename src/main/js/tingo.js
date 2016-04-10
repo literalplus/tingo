@@ -379,7 +379,7 @@ tingoApp.factory('AuthService', ['$http', '$rootScope', '$location', 'AUTH_EVENT
         };
 
         authService.runWhenAuthenticated = function (callback) { //this is kind of deprecated, use #onAuthChange(...)
-            onAuthChange(callback, null);
+            authService.onAuthChange(callback, null);
         };
 
         authService.onAuthChange = function (onLogin, onLogout) {
