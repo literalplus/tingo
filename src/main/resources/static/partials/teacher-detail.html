@@ -55,7 +55,7 @@
                  ng-click="detailCtrl.handleFieldDblClick(field)"
                  ng-mouseenter="field.hovering = true" ng-mouseleave="field.hovering = false">
                 <span ng-hide="!!field.editing">{{field.text}}</span>
-                <div ng-show="!!field.editing">
+                <div ng-show="!!field.editing" class="tingo-fill-parent">
             <textarea ng-model="field.text" title="Bingofeld bearbeiten"
                       placeholder="Text eingeben..."></textarea>
                 </div>
