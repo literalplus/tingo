@@ -10,6 +10,7 @@ public class FieldDto {
     private int id;
     private int teacherId;
     private String text;
+    private String creatorName;
 
     public int getId() {
         return id;
@@ -33,5 +34,13 @@ public class FieldDto {
 
     public void setTeacherId(int teacherId) {
         this.teacherId = teacherId;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
     }
 }

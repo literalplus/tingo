@@ -44,6 +44,7 @@ public class FieldService {
         fieldDto.setId(field.getId());
         fieldDto.setText(field.getText());
         fieldDto.setTeacherId(field.getTeacher().getId());
+        fieldDto.setCreatorName(field.getCreator() == null ? "???" : field.getCreator().getName());
         return fieldDto;
     }
 
