@@ -47,7 +47,7 @@ public class AuthenticationDto {
     public String toString() {
         return "AuthenticationDto{" +
                 "username='" + username + '\'' +
-                ", password='" + password + '\'' +
+                ", password=" + (password == null ? "null" : password.length() + " characters") +
                 ", registerToken='" + registerToken + '\'' +
                 '}';
     }
