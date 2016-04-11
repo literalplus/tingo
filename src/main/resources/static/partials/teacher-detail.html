@@ -23,7 +23,7 @@
             </small>
         </h1>
 
-        <div class="alert alert-info" ng-show="detailCtrl.getMissingFieldsCount() > 0">
+        <div class="alert alert-warning" ng-show="detailCtrl.getMissingFieldsCount() > 0">
             Die optimale Anzahl an Tingofeldern ist 5*5. F&uuml;r diese Lehrperson
             <ng-pluralize count="detailCtrl.getMissingFieldsCount()"
                           when="{'one': 'fehlt noch ein Feld.',
@@ -31,7 +31,7 @@
             </ng-pluralize>
         </div>
 
-        <div class="alert alert-info" ng-show="detailCtrl.getExtraFieldsCount() > 0">
+        <div class="alert alert-success" ng-show="detailCtrl.getExtraFieldsCount() > 0">
             Die optimale Anzahl an Tingofeldern ist 5*5. F&uuml;r diese Lehrperson gibt es
             <ng-pluralize count="detailCtrl.getExtraFieldsCount()"
                           when="{'one': 'ein Feld mehr.',
