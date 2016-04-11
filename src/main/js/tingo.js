@@ -212,7 +212,6 @@ tingoApp.factory('TeacherDetailService', ['$http',
         detailService.teacher = {name: 'Loading..', abbreviation: '....'};
         detailService.fields = [];
         var fetched = false;
-        var backupField = {};
 
         detailService.saveField = function (field) {
             var myIndex = _.indexOf(detailService.fields, field);
@@ -233,7 +232,6 @@ tingoApp.factory('TeacherDetailService', ['$http',
 
         detailService.uneditField = function (field) {
             var myIndex = _.indexOf(detailService.fields, field);
-            backupField.editing = false;
             detailService.fields[myIndex] = field.backup;
         };
 

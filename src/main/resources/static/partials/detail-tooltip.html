@@ -1,4 +1,4 @@
-<div class="btn-group btn-group-justified" role="group" ng-show="detailCtrl.editMode">
+<div class="btn-group btn-group-justified" role="group" ng-show="field.editing">
     <a role="button" class="btn" ng-click="detailCtrl.saveField(field)" title="Speichern">
         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
     </a>
@@ -11,5 +11,5 @@
 </div>
 
 <div class="tingo-field-author">
-    Autor: {{field.creatorName || "???"}}
+    Autor: {{field.creatorName}}
 </div>
