@@ -234,16 +234,16 @@ tingoApp.factory('TeacherDetailService', ['$http',
         detailService.uneditField = function (field) {
             var myIndex = _.indexOf(detailService.fields, field);
             backupField.editing = false;
-            detailService.fields[myIndex] = backupField;
+            detailService.fields[myIndex] = field.backup;
         };
 
         detailService.editField = function (field) {
-            backupField = _.clone(field);
+            field.backup = _.clone(field);
             field.editing = true;
         };
 
         detailService.addField = function () {
-            detailService.fields.push({text: '', teacherId: detailService.teacher.id, editing: true});
+            detailService.fields.push({text: '', teacherId: detailService.teacher.id, editing: true, authorName: 'du'});
         };
 
         detailService.deleteField = function (field) {
