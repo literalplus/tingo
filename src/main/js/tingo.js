@@ -73,6 +73,8 @@ var LoginController = ['$stateParams', '$rootScope', '$location',
 
 var TeacherDetailController = ['TeacherDetailService', '$stateParams',
     function (TeacherDetailService, $stateParams) {
+        var ctrl = this;
+        
         this.getFields = TeacherDetailService.getFields;
         this.getTeacher = TeacherDetailService.getTeacher;
 
@@ -82,6 +84,16 @@ var TeacherDetailController = ['TeacherDetailService', '$stateParams',
         this.addField = TeacherDetailService.addField;
         this.deleteField = TeacherDetailService.deleteField;
         this.isFetched = TeacherDetailService.isFetched;
+        
+        this.getMissingFieldsCount = function () {
+            var fields = ctrl.getFields();
+            return 25 - (fields === null ? 0 : fields.length);
+        };
+
+        this.getExtraFieldsCount = function () {
+            var fields = ctrl.getFields();
+            return (fields === null ? 0 : fields.length) - 25;
+        };
 
         TeacherDetailService.fetchTeacher($stateParams.id);
     }];

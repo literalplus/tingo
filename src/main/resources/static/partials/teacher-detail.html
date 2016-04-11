@@ -23,14 +23,20 @@
             </small>
         </h1>
 
-        <div class="alert alert-info" ng-show="detailCtrl.getFields().length < 25">
-            Die optimale Anzahl an Tingofeldern ist 5*5. F&uuml;r diese Lehrperson fehlen noch
-            {{25 - detailCtrl.getFields().length}} Felder.
+        <div class="alert alert-info" ng-show="detailCtrl.getMissingFieldsCount() > 0">
+            Die optimale Anzahl an Tingofeldern ist 5*5. F&uuml;r diese Lehrperson
+            <ng-pluralize count="detailCtrl.getMissingFieldsCount()"
+                          when="{'one': 'fehlt noch ein Feld.',
+                                 'other': 'fehlen noch {} Felder.'}">
+            </ng-pluralize>
         </div>
 
-        <div class="alert alert-info" ng-show="detailCtrl.getFields().length > 25">
+        <div class="alert alert-info" ng-show="detailCtrl.getExtraFieldsCount() > 0">
             Die optimale Anzahl an Tingofeldern ist 5*5. F&uuml;r diese Lehrperson gibt es
-            {{detailCtrl.getFields().length - 25}} Felder mehr.
+            <ng-pluralize count="detailCtrl.getExtraFieldsCount()"
+                          when="{'one': 'ein Feld mehr.',
+                                 'other': '{} Felder mehr.'}">
+            </ng-pluralize>
             Daher werden immer nur 25 zuf&auml;llig ausgew&auml;hlte Felder gedruckt werden. (was die Schwierigkeit
             des Spiels erhöht)
         </div>
