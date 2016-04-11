@@ -41,8 +41,7 @@
                  tooltip-is-open="!!field.editing" tooltip-trigger="none">
                 <span ng-hide="!!field.editing" ng-dblclick="detailCtrl.editField(field)">{{field.text}}</span>
                 <div ng-show="!!field.editing">
-            <textarea ng-dblclick="detailCtrl.saveField(field)"
-                      ng-model="field.text" title="Bingofeld bearbeiten"
+            <textarea ng-model="field.text" title="Bingofeld bearbeiten"
                       placeholder="Text eingeben..."></textarea>
                 </div>
             </div>
