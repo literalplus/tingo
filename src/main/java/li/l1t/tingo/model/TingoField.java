@@ -39,6 +39,7 @@ public class TingoField extends BaseEntity {
     }
 
     public TingoField(int id, Teacher teacher, String text) {
+        super(id);
         this.teacher = teacher;
         this.text = text;
     }
