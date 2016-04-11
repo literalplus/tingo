@@ -15,13 +15,19 @@
                 <span class="tingo-teacher-actions">
                     <a ng-click="detailCtrl.addField()"
                        title="Neues Feld" class="glyphicon glyphicon-plus"></a>
-                    <a onclick="alert('Doppelklicke auf ein Feld, um es zu bearbeiten.')"
-                       title="Doppelklicke auf ein Feld, um es zu bearbeiten" class="glyphicon glyphicon-edit"></a>
+                    <a title="Bearbeitungsmodus" class="glyphicon glyphicon-edit"
+                       ng-click="detailCtrl.editMode = true" ng-hide="detailCtrl.editMode"></a>
+                    <a title="Bearbeitungsmodus beenden" class="glyphicon glyphicon-check"
+                       ng-click="detailCtrl.editMode = false" ng-show="detailCtrl.editMode"></a>
                     <a ng-href="{{'/secure/print/teacher/by/id/' + detailCtrl.getTeacher().id}}"
                        title="Felder drucken..." class="glyphicon glyphicon-print"></a>
                 </span>
             </small>
         </h1>
+
+        <div class="alert alert-info" ng-show="detailCtrl.editMode">
+            Klicke jetzt auf ein Feld, um es zu bearbeiten.
+        </div>
 
         <div class="alert alert-warning" ng-show="detailCtrl.getMissingFieldsCount() > 0">
             Die optimale Anzahl an Tingofeldern ist 5*5. F&uuml;r diese Lehrperson
@@ -43,9 +49,12 @@
 
         <div class="container-fluid">
             <div class="col-xs-6 col-sm-2-4 tingo-field-tile"
+                 ng-class="{'bg-success': field.marked}"
                  ng-repeat="field in detailCtrl.getFields()" uib-tooltip-template="'/partials/detail-tooltip.html'"
-                 tooltip-is-open="!!field.editing" tooltip-trigger="none">
-                <span ng-hide="!!field.editing" ng-dblclick="detailCtrl.editField(field)">{{field.text}}</span>
+                 tooltip-is-open="!!field.editing || !!field.hovering" tooltip-trigger="none"
+                 ng-click="detailCtrl.handleFieldDblClick(field)"
+                 ng-mouseenter="field.hovering = true" ng-mouseleave="field.hovering = false">
+                <span ng-hide="!!field.editing">{{field.text}}</span>
                 <div ng-show="!!field.editing">
             <textarea ng-model="field.text" title="Bingofeld bearbeiten"
                       placeholder="Text eingeben..."></textarea>

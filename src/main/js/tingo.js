@@ -84,6 +84,18 @@ var TeacherDetailController = ['TeacherDetailService', '$stateParams',
         this.addField = TeacherDetailService.addField;
         this.deleteField = TeacherDetailService.deleteField;
         this.isFetched = TeacherDetailService.isFetched;
+
+        this.toggleFieldMarked = function (field) {
+            field.marked = !field.marked;
+        };
+        
+        this.handleFieldDblClick = function (field) {
+            if (ctrl.editMode) {
+                ctrl.editField(field);
+            } else {
+                ctrl.toggleFieldMarked(field);
+            }
+        };
         
         this.getMissingFieldsCount = function () {
             var fields = ctrl.getFields();
@@ -94,6 +106,8 @@ var TeacherDetailController = ['TeacherDetailService', '$stateParams',
             var fields = ctrl.getFields();
             return (fields === null ? 0 : fields.length) - 25;
         };
+
+        this.editMode = false;
 
         TeacherDetailService.fetchTeacher($stateParams.id);
     }];
