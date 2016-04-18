@@ -13,10 +13,10 @@
 <!--/*@thymesVar id="fields" type="java.util.List<li.l1t.tingo.model.TingoField>"*/-->
 <div>
     <div>
-        <h1 class="tingo-print-header">
+        <h4 class="tingo-print-header">
             <span th:text="${teacher.getName()}"></span>
             <small th:text="${teacher.getAbbreviation()}"></small>
-        </h1>
+        </h4>
 
         <span th:if="${fields.isEmpty()}">
             Für diesen Lehrer gibt es (noch) keine Bingofelder.
