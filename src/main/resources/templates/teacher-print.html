@@ -10,8 +10,8 @@
 
 <body>
 <!--/*@thymesVar id="teacher" type="li.l1t.tingo.model.Teacher"*/-->
-<!--/*@thymesVar id="fields" type="java.util.List<li.l1t.tingo.model.TingoField>"*/-->
-<div>
+<!--/*@thymesVar id="boards" type="java.util.List<java.util.List<li.l1t.tingo.model.TingoField>>"*/-->
+<div class="tingo-print-page" th:each="fields : ${boards}">
     <div>
         <h2 class="tingo-print-header">
             <span th:text="${teacher.getName()}"></span>

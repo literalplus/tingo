@@ -12,9 +12,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Controller for serving Tingo's main template, aka the AngularJS client.
@@ -37,15 +40,24 @@ public class LandingController {
         return "main";
     }
 
-    @RequestMapping(value = "/secure/print/teacher/by/id/{id}", method = RequestMethod.GET)
-    public String teacherPrint(Model model, @PathVariable("id") int id) {
+    @RequestMapping(value = "/secure/print/teacher/by/id/{id}/pages/{boardCount}", method = RequestMethod.GET)
+    public String teacherPrint(Model model, @PathVariable int id,
+                               @PathVariable @Valid @Max(142) @Min(1) int boardCount) {
         Teacher teacher = teacherService.getById(id);
         model.addAttribute("teacher", teacher);
         List<TingoField> fields = fieldService.getAllFieldsByTeacher(teacher);
-        Collections.shuffle(fields);
-        Collections.shuffle(fields); //subjective feeling of safety
-        fields = fields.stream().limit(5 * 5).collect(Collectors.toList());
-        model.addAttribute("fields", fields);
+        List<List<TingoField>> boards = new ArrayList<>(boardCount);
+        for(int i = 0; i < boardCount; i++) {
+            boards.add(prepareFields(fields));
+        }
+        model.addAttribute("boards", boards);
         return "teacher-print";
+    }
+
+    private List<TingoField> prepareFields(List<TingoField> fields) {
+        List<TingoField> newFields = new ArrayList<>(fields);
+        Collections.shuffle(newFields);
+        Collections.shuffle(newFields); //subjective feeling of safety
+        return newFields.size() < 25 ? newFields : newFields.subList(0, 25);
     }
 }
