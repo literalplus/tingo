@@ -30,7 +30,7 @@ public class TingoField extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_name", updatable = false)
-    private User creator;
+    private RegisteredUser creator;
 
     protected TingoField() { }
 
@@ -56,11 +56,11 @@ public class TingoField extends BaseEntity {
         this.text = text;
     }
 
-    public User getCreator() {
+    public RegisteredUser getCreator() {
         return creator;
     }
 
-    public void setCreator(User creator) {
+    public void setCreator(RegisteredUser creator) {
         this.creator = creator;
     }
 

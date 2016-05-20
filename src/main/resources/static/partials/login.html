@@ -10,19 +10,45 @@
         <em>{{auth.loginError}}</em>
     </div>
 
-    <p>
-        Noch kein Account? <a ui-sref="register">Hier registrieren.</a>
-    </p>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12 col-md-6">
+                <h1>Neu hier?</h1>
+                <p>
+                    Wenn du nur einen Zugangscode bekommen hast, kannst du
+                    ihn hier eingeben und alle Tingofelder anschauen.
+                </p>
+                <form role="form" ng-submit="auth.guestLogin()">
+                    <div class="form-group">
+                        <label for="accessCode">Zugangscode:</label>
+                        <input type="text" class="input-lg tingo-input-green form-control" id="accessCode"
+                               name="accessCode" ng-model="auth.guestCredentials.password">
+                    </div>
+                    <button type="submit" class="btn btn-success btn-lg">Gastlogin</button>
+                </form>
+            </div> <!-- /guest login -->
+            <div class="col-xs-12 col-md-6">
+                <h1>VIP?</h1>
+                <p>
+                    Wenn du bereits registriert bist oder einen speziellen Geheimcode
+                    bekommen hast, kannst du dich unten anmelden oder
+                    <a ui-sref="register">hier registrieren.</a>
+                </p>
 
-    <form role="form" ng-submit="auth.login()">
-        <div class="form-group">
-            <label for="username">Benutzername:</label>
-            <input type="text" class="form-control" id="username" name="username" ng-model="auth.credentials.username"/>
-        </div>
-        <div class="form-group">
-            <label for="password">Passwort:</label>
-            <input type="password" class="form-control" id="password" name="password" ng-model="auth.credentials.password"/>
-        </div>
-        <button type="submit" class="btn btn-primary">Absenden</button>
-    </form>
+                <form role="form" ng-submit="auth.login()">
+                    <div class="form-group">
+                        <label for="username">Benutzername:</label>
+                        <input type="text" class="form-control" id="username"
+                               name="username" ng-model="auth.credentials.username"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Passwort:</label>
+                        <input type="password" class="form-control" id="password"
+                               name="password" ng-model="auth.credentials.password"/>
+                    </div>
+                    <button type="submit" class="btn btn-primary">VIP-Login</button>
+                </form>
+            </div> <!-- /user login -->
+        </div> <!-- /.row -->
+    </div> <!-- /.container-fluid --->
 </div>

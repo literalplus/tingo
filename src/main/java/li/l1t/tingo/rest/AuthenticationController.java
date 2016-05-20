@@ -1,13 +1,16 @@
 package li.l1t.tingo.rest;
 
+import li.l1t.tingo.config.TingoConfiguration;
+import li.l1t.tingo.exception.AuthException;
 import li.l1t.tingo.model.dto.AuthenticationDto;
 import li.l1t.tingo.security.auth.TokenHandler;
 import li.l1t.tingo.service.UserService;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,6 +36,8 @@ public class AuthenticationController {
     private TokenHandler tokenHandler;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private TingoConfiguration configuration;
 
     @RequestMapping("/auth/status")
     public Principal user(Principal user) { //Spring throws a 401 if not logged in (explicitly only authed users in security config)
@@ -52,11 +57,29 @@ public class AuthenticationController {
 
     @RequestMapping(value = "/auth/login", method = RequestMethod.POST)
     public Map<String, String> login(@RequestBody AuthenticationDto request) {
-        LoggerFactory.getLogger(getClass()).debug(request.toString()); //strips password
         Authentication authentication =
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
-        Principal user = authenticationManager.authenticate(authentication);
+        Principal user;
+        try {
+            user = authenticationManager.authenticate(authentication);
+        } catch (BadCredentialsException e) {
+            throw new AuthException("Benutzername und/oder Passwort falsch!");
+        } catch (AuthenticationException e) {
+            throw new AuthException("Fehler beim Login: " + e.getClass().getSimpleName());
+        }
         String token = tokenHandler.createTokenForUser(user);
         return Collections.singletonMap("token", token);
+    }
+
+    @RequestMapping(value = "/auth/guest", method = RequestMethod.POST)
+    public Map<String, String> guestAuth(@RequestBody AuthenticationDto request) {
+        if (configuration.getGuestCode().equalsIgnoreCase(request.getPassword())) {
+            return Collections.singletonMap("token", tokenHandler.createGuestToken());
+        } else if(configuration.getRegisterSecret().equalsIgnoreCase(request.getPassword())) {
+            throw new AuthException("Du bist zu Größerem bestimmt! Das ist ein VIP-Code, " +
+                    "du kannst dir damit rechts einen Account anlegen.");
+        } else {
+            throw new AuthException("Invalider Zugangscode!");
+        }
     }
 }

@@ -13,10 +13,10 @@
             <small ng-show="detailCtrl.getTeacher().id">
                 {{detailCtrl.getTeacher().abbreviation}}
                 <span class="tingo-teacher-actions">
-                    <a ng-click="detailCtrl.addField()"
+                    <a ng-click="detailCtrl.addField()" ng-hide="auth.guest()"
                        title="Neues Feld" class="glyphicon glyphicon-plus"></a>
                     <a title="Bearbeitungsmodus" class="glyphicon glyphicon-edit"
-                       ng-click="detailCtrl.editMode = true" ng-hide="detailCtrl.editMode"></a>
+                       ng-click="detailCtrl.editMode = true" ng-hide="detailCtrl.editMode || auth.guest()"></a>
                     <a title="Bearbeitungsmodus beenden" class="glyphicon glyphicon-check"
                        ng-click="detailCtrl.editMode = false" ng-show="detailCtrl.editMode"></a>
                     <a ng-href="{{'/secure/print/teacher/by/id/' + detailCtrl.getTeacher().id + '/pages/1'}}"
@@ -29,7 +29,7 @@
             Klicke jetzt auf ein Feld, um es zu bearbeiten.
         </div>
 
-        <div class="alert alert-warning" ng-show="detailCtrl.getMissingFieldsCount() > 0">
+        <div class="alert alert-warning" ng-show="detailCtrl.getMissingFieldsCount() > 0 && !auth.guest()">
             Die optimale Anzahl an Tingofeldern ist 5*5. F&uuml;r diese Lehrperson
             <ng-pluralize count="detailCtrl.getMissingFieldsCount()"
                           when="{'one': 'fehlt noch ein Feld.',
@@ -37,7 +37,7 @@
             </ng-pluralize>
         </div>
 
-        <div class="alert alert-success" ng-show="detailCtrl.getExtraFieldsCount() > 0">
+        <div class="alert alert-success" ng-show="detailCtrl.getExtraFieldsCount() > 0 && !auth.guest()">
             Die optimale Anzahl an Tingofeldern ist 5*5. F&uuml;r diese Lehrperson gibt es
             <ng-pluralize count="detailCtrl.getExtraFieldsCount()"
                           when="{'one': 'ein Feld mehr.',
@@ -51,7 +51,7 @@
             <div class="col-xs-6 col-sm-2-4 tingo-field-tile"
                  ng-class="{'bg-success': field.marked}"
                  ng-repeat="field in detailCtrl.getFields()" uib-tooltip-template="'/partials/detail-tooltip.html'"
-                 tooltip-is-open="!!field.editing || !!field.hovering" tooltip-trigger="none"
+                 tooltip-is-open="(!!field.editing || !!field.hovering) && !auth.guest()" tooltip-trigger="none"
                  ng-click="detailCtrl.handleFieldDblClick(field)"
                  ng-mouseenter="field.hovering = true" ng-mouseleave="field.hovering = false">
                 <span ng-hide="!!field.editing">{{field.text}}</span>

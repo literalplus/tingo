@@ -1,6 +1,6 @@
 package li.l1t.tingo.model.repo;
 
-import li.l1t.tingo.model.User;
+import li.l1t.tingo.model.RegisteredUser;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
  * @since 2016-02-21
  */
 @Repository
-public interface UserRepository extends CrudRepository<User, String> {
-    User findByName(String name);
+public interface UserRepository extends CrudRepository<RegisteredUser, String> {
+    RegisteredUser findByName(String name);
 }

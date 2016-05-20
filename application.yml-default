@@ -7,7 +7,7 @@ spring:
     username: tingo
     password: my-very-secure-password
 tingo:
-  registerSecret: my-secret
+  registerSecret: 'my-secret'
   footerText: 'This service is provided by Aperture Laboratories. Change this text in application.yml.'
   # additional navbar links
   # - caption: Link text
@@ -15,3 +15,4 @@ tingo:
   navbarLinks:
     - caption: 'Source'
       url: 'https://github.com/xxyy/tingo'
+  guestCode: 'guest-code'

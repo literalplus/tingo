@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ExceptionHandlerControllerAdvice {
     @ExceptionHandler(JsonPropagatingException.class)
     public ResponseEntity<ErrorDto> handleJsonPropagatingException(JsonPropagatingException exception) {
-        return new ResponseEntity<>(new ErrorDto(exception), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(new ErrorDto(exception), exception.getStatus());
     }
 
     @ExceptionHandler(SignatureException.class)

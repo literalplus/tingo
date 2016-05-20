@@ -50,12 +50,14 @@
                     </li>
                 </ul>
 
-                <p class="navbar-text pull-right" ng-hide="isAuthenticated()">
+                <p class="navbar-text pull-right" ng-hide="isAuthenticated()" ng-cloak="">
                     Hello, it's me? <a ui-sref="login">Login</a>
                 </p>
 
-                <p class="navbar-text pull-right" ng-show="isAuthenticated()">
-                    wg wm, {{auth.getUserName()}}? <a href="" ng-click="auth.logout()">Logout</a>
+                <p class="navbar-text pull-right" ng-show="isAuthenticated()" ng-cloak="">
+                    <span ng-hide="auth.guest()">wg wm, {{auth.getUserName()}}?</span>
+                    <span ng-show="auth.guest()">sup, Fremder?</span>
+                    <a href="" ng-click="auth.logout()">Logout</a>
                 </p>
             </div> <!-- /.navbar-collapse -->
         </div> <!-- /.container-fluid -->

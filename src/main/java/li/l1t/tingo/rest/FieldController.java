@@ -1,5 +1,6 @@
 package li.l1t.tingo.rest;
 
+import li.l1t.tingo.model.GuestUser;
 import li.l1t.tingo.model.Teacher;
 import li.l1t.tingo.model.TingoField;
 import li.l1t.tingo.model.dto.FieldDto;
@@ -58,11 +59,13 @@ public class FieldController {
 
     @RequestMapping(value = "/api/field/save", method = RequestMethod.POST)
     public FieldDto createField(@RequestBody FieldDto field, Principal user) {
+        GuestUser.validateNotGuest(user);
         return fieldService.toDto(fieldService.save(field, user));
     }
 
     @RequestMapping(value = "/api/field/delete", method = RequestMethod.POST)
-    public FieldDto deleteFieldById(@RequestBody FieldDto fieldDto) {
+    public FieldDto deleteFieldById(@RequestBody FieldDto fieldDto, Principal user) {
+        GuestUser.validateNotGuest(user);
         TingoField field = fieldService.toEntity(fieldDto);
         fieldService.delete(field);
         return fieldService.toDto(field);

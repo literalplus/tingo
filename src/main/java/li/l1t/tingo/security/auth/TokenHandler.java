@@ -3,6 +3,7 @@ package li.l1t.tingo.security.auth;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import li.l1t.tingo.misc.PersistentTokenGenerator;
+import li.l1t.tingo.model.GuestUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -33,6 +34,9 @@ public class TokenHandler {
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+        if(GuestUser.NAME.equals(username)) {
+            return GuestUserDetails.INSTANCE;
+        }
         return userDetailsService.loadUserByUsername(username);
     }
 
@@ -41,6 +45,14 @@ public class TokenHandler {
                 .setSubject(user.getName())
                 .signWith(SignatureAlgorithm.HS256, tokenGenerator.getToken())
                 .setExpiration(Date.from(LocalDateTime.now().plusDays(7).atZone(ZoneId.systemDefault()).toInstant()))
+                .compact();
+    }
+
+    public String createGuestToken() {
+        return Jwts.builder()
+                .setSubject(GuestUser.NAME)
+                .signWith(SignatureAlgorithm.HS256, tokenGenerator.getToken())
+                .setExpiration(Date.from(LocalDateTime.now().plusDays(2).atZone(ZoneId.systemDefault()).toInstant()))
                 .compact();
     }
 }

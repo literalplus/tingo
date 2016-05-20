@@ -26,6 +26,7 @@ public class UserAuthority {
     @Column(name = "username")
     private String name;
 
+    @Column
     private String authority;
 
     public UserAuthority(String name, String authority) {

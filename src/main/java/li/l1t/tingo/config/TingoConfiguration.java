@@ -18,6 +18,7 @@ public class TingoConfiguration {
     private String registerSecret;
     private String footerText;
     private List<NavbarLink> navbarLinks;
+    private String guestCode;
 
     public String getRegisterSecret() {
         return registerSecret;
@@ -44,5 +45,13 @@ public class TingoConfiguration {
 
     public void setNavbarLinks(List<NavbarLink> navbarLinks) {
         this.navbarLinks = navbarLinks;
+    }
+
+    public String getGuestCode() {
+        return guestCode;
+    }
+
+    public void setGuestCode(String guestCode) {
+        this.guestCode = guestCode;
     }
 }

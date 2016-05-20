@@ -78,7 +78,7 @@ public class FieldService {
         if (tingoField == null) {
             tingoField = new TingoField(teacher, spec.getText());
             if(user != null) {
-                tingoField.setCreator(userService.fromPrincipal(user));
+                tingoField.setCreator(userService.fromRegistered(user));
             }
         } else {
             adaptFromDto(tingoField, spec);
