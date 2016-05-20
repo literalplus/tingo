@@ -41,6 +41,13 @@
                             </li>
                         </ul>
                     </li>
+                    <!--/*@thymesVar id="navbarLinks" type="java.util.List<li.l1t.tingo.config.NavbarLink>"*/-->
+                    <li th:each="link : ${navbarLinks}">
+                        <a th:href="${link.getUrl()}" th:text="${link.getCaption()}"
+                           th:if="${!link.isStateRef()}"></a>
+                        <a data-th-attr="ui-sref=${link.getStateRef()}" th:text="${link.getCaption()}"
+                           th:if="${link.isStateRef()}"></a>
+                    </li>
                 </ul>
 
                 <p class="navbar-text pull-right" ng-hide="isAuthenticated()">

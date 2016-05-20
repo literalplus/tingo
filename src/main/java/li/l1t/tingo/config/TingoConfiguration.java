@@ -3,6 +3,9 @@ package li.l1t.tingo.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Stores configuration values for the whole application.
  *
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class TingoConfiguration {
     private String registerSecret;
     private String footerText;
+    private List<NavbarLink> navbarLinks;
 
     public String getRegisterSecret() {
         return registerSecret;
@@ -29,5 +33,16 @@ public class TingoConfiguration {
 
     public void setFooterText(String footerText) {
         this.footerText = footerText;
+    }
+
+    public List<NavbarLink> getNavbarLinks() {
+        if(navbarLinks == null) {
+            navbarLinks = new ArrayList<>();
+        }
+        return navbarLinks;
+    }
+
+    public void setNavbarLinks(List<NavbarLink> navbarLinks) {
+        this.navbarLinks = navbarLinks;
     }
 }

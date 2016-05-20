@@ -9,3 +9,9 @@ spring:
 tingo:
   registerSecret: my-secret
   footerText: 'This service is provided by Aperture Laboratories. Change this text in application.yml.'
+  # additional navbar links
+  # - caption: Link text
+  #   url:     target URL (state:// for Angular UI ui-sref)
+  navbarLinks:
+    - caption: 'Source'
+      url: 'https://github.com/xxyy/tingo'
