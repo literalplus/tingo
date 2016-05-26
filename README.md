@@ -2,7 +2,7 @@
 
 __Tingo__ is a web application built to manage teacher bingos. It uses technologies like AngularJS 
 (JS is bad, I know, but this is supposed to be a simple and fast project), lesscss and the Spring
-Framework. Also check out [sic](https.//github.com/xxyy/sic), which is a citation management software.
+Framework. Also check out [sic](https://github.com/xxyy/sic), which is a citation management software.
 
 ## What is it?
 
