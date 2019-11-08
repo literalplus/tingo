@@ -2,7 +2,7 @@
 
 __Tingo__ is a web application built to manage teacher bingos. It uses technologies like AngularJS 
 (JS is bad, I know, but this is supposed to be a simple and fast project), lesscss and the Spring
-Framework. Also check out [sic](https://github.com/xxyy/sic), which is a citation management software.
+Framework. Also check out [sic](https://github.com/literalplus/sic), which is a citation management software.
 
 ## What is it?
 
@@ -28,7 +28,7 @@ professors, anything. Use your imagination.
 To install _Tingo_, you first need to build it: (assuming you're on GNU/Linux, other platforms work similarly)
 
 ````bash
-git clone https://github.com/xxyy/tingo.git
+git clone https://github.com/literalplus/tingo.git
 cd sic
 ./gradlew build
 cp application.yml-default application.yml
