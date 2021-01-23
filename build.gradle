@@ -2,7 +2,7 @@ buildscript {
     repositories {
         jcenter()
         maven {
-            url 'http://repo.spring.io/plugins-release'
+            url 'https://repo.spring.io/plugins-release'
         }
         maven {
             url 'https://plugins.gradle.org/m2/'
@@ -20,7 +20,7 @@ plugins {
     id "org.springframework.boot" version "1.5.12.RELEASE"
 }
 
-group 'li.l1t'
+group 'plus.lit'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
@@ -30,11 +30,11 @@ apply plugin: 'propdeps-idea'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-ext.genResDir = "$buildDir/resources"
+ext.genResDir = "$buildDir/resources/generated"
 
 repositories {
     mavenCentral()
-    maven { url 'http://repo.grails.org/grails/plugins-releases-local' }
+    maven { url 'https://repo.grails.org/grails/plugins-releases-local' }
 }
 
 dependencies {
@@ -63,7 +63,7 @@ configurations.all {
 compileJava.dependsOn(processResources)
 
 jar {
-    baseName = 'tingo'
+    archiveName = 'tingo.jar'
     version = project.version
 }
 

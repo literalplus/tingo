@@ -1,0 +1,45 @@
+replicaCount: 1
+
+image:
+  repository: images.lit.plus/tingo
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: latest
+
+# secret should have these values analogous to application.yml-default:
+# - datasource-url
+# - datasource-username
+# - datasource-password
+# - register-secret
+# - guest-code
+secretName: tingo
+
+imagePullSecrets:
+  - name: shared-image-pull
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: {}
+
+podSecurityContext:
+  fsGroup: 1001
+
+securityContext:
+  capabilities:
+    drop:
+     - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1001
+
+service:
+  type: ClusterIP
+  port: 8080
+
+resources:
+  limits:
+    cpu: 300m
+    memory: 1Gi
+  requests:
+    cpu: 100m
+    memory: 1Gi

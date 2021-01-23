@@ -19,7 +19,7 @@ module.exports = function (grunt) {
                 },
                 build: {
                     files: {
-                        'build/resources/static/js/tingo.min.js': 'src/main/js/**.js'
+                        'build/resources/generated/static/js/tingo.min.js': 'src/main/js/**.js'
                     }
                 }
             },
@@ -27,14 +27,14 @@ module.exports = function (grunt) {
             concat: {
                 dist: {
                     src: 'src/main/js/**.js',
-                    dest: 'build/resources/static/js/tingo.js'
+                    dest: 'build/resources/generated/static/js/tingo.js'
                 }
             },
 
             less: {
                 build: {
                     files: {
-                        'build/resources/static/css/tingo.css': 'src/main/less/tingo.less'
+                        'build/resources/generated/static/css/tingo.css': 'src/main/less/tingo.less'
                     }
                 }
             },
@@ -45,7 +45,7 @@ module.exports = function (grunt) {
                 },
                 build: {
                     files: {
-                        'build/resources/static/css/tingo.min.css': 'build/resources/static/css/tingo.css'
+                        'build/resources/generated/static/css/tingo.min.css': 'build/resources/generated/static/css/tingo.css'
                     }
                 }
             },
@@ -66,7 +66,7 @@ module.exports = function (grunt) {
                 bootstrap_fonts: {
                     expand: true,
                     src: 'node_modules/bootstrap-less/fonts/**',
-                    dest: 'build/resources/static/fonts/',
+                    dest: 'build/resources/generated/static/fonts/',
                     flatten: true
                 }
             }

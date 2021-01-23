@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "tingo.fullname" . }}
+  labels:
+    {{- include "tingo.labels" . | nindent 4 }}
+data:
+  application.yml: >-
+    spring:
+      profiles:
+        active: []
+    tingo:
+      footerText: 'was stand hier ich kann es nicht mehr sagen'
+      navbarLinks:
+        - caption: 'Source'
+          url: 'https://github.com/literalplus/tingo'
+        - caption: '[sic!]'
+          url: 'https://sic.lit.plus'
+      statsdEnabled: false
