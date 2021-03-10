@@ -2,7 +2,7 @@ FROM gradle:4.6-jdk8 AS build
 
 COPY . .
 
-RUN ./gradlew build
+RUN gradle build
 
 FROM adoptopenjdk/openjdk8:alpine-slim AS run
 COPY --from=build /home/gradle/build/libs/tingo.jar /tingo.jar

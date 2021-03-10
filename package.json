@@ -10,7 +10,7 @@
     "grunt-contrib-concat": "latest",
     "grunt-contrib-copy": "latest",
     "grunt-contrib-less": "1.3.0",
-    "grunt-contrib-cssmin": "latest",
+    "grunt-contrib-cssmin": "3.0.0",
     "grunt-contrib-watch": "latest",
     "jshint-stylish": "latest",
     "bootstrap-less": "3.3.6",
