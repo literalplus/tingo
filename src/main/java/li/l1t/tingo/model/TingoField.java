@@ -49,7 +49,8 @@ public class TingoField extends BaseEntity {
     }
 
     public String getText() {
-        return text;
+        // Legacy newline support
+        return text.replace("\\n", "\n");
     }
 
     public void setText(String text) {
