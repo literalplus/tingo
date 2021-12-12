@@ -1,19 +1,18 @@
 package li.l1t.tingo.rest;
 
-import li.l1t.tingo.config.TingoConfiguration;
+import li.l1t.tingo.config.TingoProperties;
 import li.l1t.tingo.exception.AuthException;
 import li.l1t.tingo.model.dto.AuthenticationDto;
 import li.l1t.tingo.security.auth.TokenHandler;
 import li.l1t.tingo.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
@@ -25,19 +24,24 @@ import java.util.Map;
  * REST Controller providing an API for authentication. That API supports logging in, logging out and checking login
  * status.
  *
- * @author <a href="http://xxyy.github.io/">xxyy</a>
  * @since 2016-02-09
  */
 @RestController
 public class AuthenticationController {
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private TokenHandler tokenHandler;
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private TingoConfiguration configuration;
+    private final UserService userService;
+    private final TokenHandler tokenHandler;
+    private final AuthenticationManager authenticationManager;
+    private final TingoProperties configuration;
+
+    public AuthenticationController(
+            UserService userService, TokenHandler tokenHandler,
+            AuthenticationManager authenticationManager, TingoProperties configuration
+    ) {
+        this.userService = userService;
+        this.tokenHandler = tokenHandler;
+        this.authenticationManager = authenticationManager;
+        this.configuration = configuration;
+    }
 
     @RequestMapping("/auth/status")
     public Principal user(Principal user) { //Spring throws a 401 if not logged in (explicitly only authed users in security config)
@@ -49,13 +53,13 @@ public class AuthenticationController {
         return Collections.singletonMap("token", session.getId());
     }
 
-    @RequestMapping(value = "/auth/register", method = RequestMethod.POST)
+    @PostMapping("/auth/register")
     public Map<String, Boolean> register(@RequestBody AuthenticationDto request) {
         userService.createUser(request.getUsername(), request.getPassword(), request.getRegisterToken());
         return Collections.singletonMap("success", true);
     }
 
-    @RequestMapping(value = "/auth/login", method = RequestMethod.POST)
+    @PostMapping("/auth/login")
     public Map<String, String> login(@RequestBody AuthenticationDto request) {
         Authentication authentication =
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
@@ -71,7 +75,7 @@ public class AuthenticationController {
         return Collections.singletonMap("token", token);
     }
 
-    @RequestMapping(value = "/auth/guest", method = RequestMethod.POST)
+    @PostMapping(value = "/auth/guest")
     public Map<String, String> guestAuth(@RequestBody AuthenticationDto request) {
         if (configuration.getGuestCode().equalsIgnoreCase(request.getPassword())) {
             return Collections.singletonMap("token", tokenHandler.createGuestToken());

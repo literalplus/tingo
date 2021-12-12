@@ -13,11 +13,17 @@ spring:
   datasource:
     testOnBorrow: true
     validationQuery: SELECT 1
-flyway:
-  # migrate if we don't have a baseline defined, i.e. Flyway has never run on that database.
-  baseline-on-migrate: true
-  encoding: UTF-8
-  baseline-version: 0
+  flyway:
+    # migrate if we don't have a baseline defined, i.e. Flyway has never run on that database.
+    #baseline-on-migrate: true
+    encoding: UTF-8
+    #baseline-version: 0
 
 management:
-  port: 8081
+  endpoints:
+    enabled-by-default: false
+  endpoint:
+    health:
+      enabled: true
+  server:
+    port: 8081

@@ -1,7 +1,1 @@
-# Spring property source for the Tingo application, providing development configuration
-# Note that properties are considered in this order:
-# http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-external-config
-# This is not loaded by default, only if the prod profile is enabled.
-
-logging:
-  file: "/var/log/tingo/tingo.log"
+---

@@ -4,41 +4,6 @@ module.exports = function (grunt) {
     grunt.initConfig({
             pkg: grunt.file.readJSON('package.json'),
 
-            jshint: {
-                options: {
-                    reporter: require('jshint-stylish') // use jshint-stylish to make our errors look and read good
-                },
-
-                // when this task is run, lint the Gruntfile and all js files in src
-                build: ['Gruntfile.js', 'src/main/js/**.js']
-            },
-
-            uglify: {
-                options: {
-                    banner: '/*\n <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> \n*/\n'
-                },
-                build: {
-                    files: {
-                        'build/resources/generated/static/js/tingo.min.js': 'src/main/js/**.js'
-                    }
-                }
-            },
-
-            concat: {
-                dist: {
-                    src: 'src/main/js/**.js',
-                    dest: 'build/resources/generated/static/js/tingo.js'
-                }
-            },
-
-            less: {
-                build: {
-                    files: {
-                        'build/resources/generated/static/css/tingo.css': 'src/main/less/tingo.less'
-                    }
-                }
-            },
-
             cssmin: {
                 options: {
                     banner: '/*\n <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> \n*/\n'

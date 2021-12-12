@@ -4,13 +4,14 @@ import li.l1t.tingo.model.RegisteredUser;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * Repository for user data.
  *
- * @author <a href="http://xxyy.github.io/">xxyy</a>
  * @since 2016-02-21
  */
 @Repository
 public interface UserRepository extends CrudRepository<RegisteredUser, String> {
-    RegisteredUser findByName(String name);
+    Optional<RegisteredUser> findByName(String name);
 }

@@ -4,29 +4,29 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import li.l1t.tingo.misc.PersistentTokenGenerator;
 import li.l1t.tingo.model.GuestUser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-import java.sql.Date;
+import java.util.Date;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 /**
  * Handles generation and validation of JWT tokens using the jjwt library.
  *
- * @author <a href="http://xxyy.github.io/">xxyy</a>
  * @since 2016-03-05
  */
 @Service
 public class TokenHandler {
-    @Autowired
-    private PersistentTokenGenerator tokenGenerator;
+    private final PersistentTokenGenerator tokenGenerator;
+    private final UserDetailsService userDetailsService;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+    public TokenHandler(PersistentTokenGenerator tokenGenerator, UserDetailsService userDetailsService) {
+        this.tokenGenerator = tokenGenerator;
+        this.userDetailsService = userDetailsService;
+    }
 
     public UserDetails parseUserFromToken(String token) {
         String username = Jwts.parser()

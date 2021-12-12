@@ -4,7 +4,6 @@ import li.l1t.tingo.exception.TeacherNotFoundException;
 import li.l1t.tingo.model.Teacher;
 import li.l1t.tingo.model.dto.TeacherDto;
 import li.l1t.tingo.model.repo.TeacherRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,19 +14,19 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class TeacherService {
-    @Autowired
-    private TeacherRepository teacherRepository;
+    private final TeacherRepository teacherRepository;
+
+    public TeacherService(TeacherRepository teacherRepository) {
+        this.teacherRepository = teacherRepository;
+    }
 
     public Iterable<Teacher> getAllTeachers() {
         return teacherRepository.findAll();
     }
 
     public Teacher getById(int id) {
-        Teacher teacher = teacherRepository.findOne(id);
-        if(teacher == null) {
-            throw new TeacherNotFoundException(id);
-        }
-        return teacher;
+        return teacherRepository.findById(id)
+                .orElseThrow(() -> new TeacherNotFoundException(id));
     }
 
     public TeacherDto toDto(Teacher entity) {

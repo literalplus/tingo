@@ -13,8 +13,7 @@ import java.security.Principal;
 import java.util.List;
 
 /**
- * Service handling Tingo fields, specifically finding fields by teacher,
- * adding, creating and deleting fields.
+ * Service handling Tingo fields, specifically finding fields by teacher, adding, creating and deleting fields.
  *
  * @author <a href="http://xxyy.github.io/">xxyy</a>
  * @since 2016-02-14
@@ -34,6 +33,7 @@ public class FieldService {
 
     /**
      * Maps a model field to a Data Transfer Object.
+     *
      * @param field the field to map
      * @return a DTO containing copied data from the field
      */
@@ -60,12 +60,8 @@ public class FieldService {
     }
 
     public TingoField findById(int fieldId) {
-        TingoField tingoField = fieldRepository.findOne(fieldId);
-        if(tingoField == null) {
-            throw new FieldNotFoundException(fieldId);
-        } else {
-            return tingoField;
-        }
+        return fieldRepository.findById(fieldId)
+                .orElseThrow(() -> new FieldNotFoundException(fieldId));
     }
 
     public TingoField save(FieldDto spec) {
@@ -74,15 +70,15 @@ public class FieldService {
 
     public TingoField save(FieldDto spec, Principal user) {
         Teacher teacher = teacherService.getById(spec.getTeacherId());
-        TingoField tingoField = fieldRepository.findOne(spec.getId());
-        if (tingoField == null) {
-            tingoField = new TingoField(teacher, spec.getText());
-            if(user != null) {
-                tingoField.setCreator(userService.fromRegistered(user));
-            }
-        } else {
-            adaptFromDto(tingoField, spec);
-        }
+        var tingoField = fieldRepository.findById(spec.getId())
+                .map(model -> adaptFromDto(model, spec))
+                .orElseGet(() -> {
+                    var field = new TingoField(teacher, spec.getText());
+                    if (user != null) {
+                        field.setCreator(userService.fromRegistered(user));
+                    }
+                    return field;
+                });
         return fieldRepository.save(tingoField);
     }
 

@@ -11,7 +11,6 @@ import javax.validation.Valid;
 /**
  * Represents a user.
  *
- * @author <a href="http://xxyy.github.io/">xxyy</a>
  * @since 2016-02-21
  */
 @Entity

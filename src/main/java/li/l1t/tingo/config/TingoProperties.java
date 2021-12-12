@@ -9,12 +9,11 @@ import java.util.List;
 /**
  * Stores configuration values for the whole application.
  *
- * @author <a href="http://xxyy.github.io/">xxyy</a>
  * @since 2016-02-21
  */
 @Service
 @ConfigurationProperties(prefix = "tingo")
-public class TingoConfiguration {
+public class TingoProperties {
     private String registerSecret;
     private String footerText;
     private List<NavbarLink> navbarLinks;

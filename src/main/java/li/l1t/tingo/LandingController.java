@@ -1,6 +1,6 @@
 package li.l1t.tingo;
 
-import li.l1t.tingo.config.TingoConfiguration;
+import li.l1t.tingo.config.TingoProperties;
 import li.l1t.tingo.model.Teacher;
 import li.l1t.tingo.model.TingoField;
 import li.l1t.tingo.service.FieldService;
@@ -8,9 +8,8 @@ import li.l1t.tingo.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
@@ -28,20 +27,20 @@ import java.util.List;
 @Controller
 public class LandingController {
     @Autowired
-    private TingoConfiguration configuration;
+    private TingoProperties configuration;
     @Autowired
     private TeacherService teacherService;
     @Autowired
     private FieldService fieldService;
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @GetMapping("")
     public String main(Model model) {
         model.addAttribute("footerText", configuration.getFooterText());
         model.addAttribute("navbarLinks", configuration.getNavbarLinks());
         return "main";
     }
 
-    @RequestMapping(value = "/secure/print/teacher/by/id/{id}/pages/{boardCount}", method = RequestMethod.GET)
+    @GetMapping("/secure/print/teacher/by/id/{id}/pages/{boardCount}")
     public String teacherPrint(Model model, @PathVariable int id,
                                @PathVariable @Valid @Max(142) @Min(1) int boardCount) {
         Teacher teacher = teacherService.getById(id);

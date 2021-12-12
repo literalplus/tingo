@@ -9,10 +9,9 @@ import javax.persistence.Table;
 import javax.validation.Valid;
 
 /**
- * Represents an authority assigned to a user. Necessary because Spring doesn't accept users
- * without authorities as existing for some reason.
+ * Represents an authority assigned to a user. Necessary because Spring doesn't accept users without authorities as
+ * existing for some reason.
  *
- * @author <a href="http://xxyy.github.io/">xxyy</a>
  * @since 2016-02-22
  */
 @Entity
@@ -28,6 +27,9 @@ public class UserAuthority {
 
     @Column
     private String authority;
+
+    public UserAuthority() {
+    }
 
     public UserAuthority(String name, String authority) {
         this.name = name;
