@@ -27,6 +27,8 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           env:
+            - name: spring_datasource_hikari_mimimum_idle
+              value: "0"
             - name: SPRING_DATASOURCE_URL
               valueFrom:
                 secretKeyRef:
