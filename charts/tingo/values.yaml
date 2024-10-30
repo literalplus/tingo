@@ -8,11 +8,13 @@ image:
 
 # secret should have these values analogous to application.yml-default:
 # - datasource-url
-# - datasource-username
-# - datasource-password
 # - register-secret
 # - guest-code
 secretName: tingo
+
+# - datasource-username
+# - datasource-password
+dbSecretName: tingo-db
 
 imagePullSecrets:
   - name: shared-image-pull
