@@ -11,6 +11,9 @@ spring:
     hibernate:
       ddl-auto: validate
   datasource:
+    hikari:
+      minimum-idle: 0
+      maximum-pool-size: 10
     testOnBorrow: true
     validationQuery: SELECT 1
   flyway:
