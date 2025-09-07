@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17-jdk-alpine as jre-build
+FROM docker.io/eclipse-temurin:21-jdk-alpine as jre-build
 
 # Create a custom Java runtime
 # https://github.com/adoptium/containers/issues/80
@@ -22,13 +22,13 @@ RUN $JAVA_HOME/bin/jlink \
          --compress=2 \
          --output /javaruntime
 
-FROM gradle:7.2-jdk17 AS build
+FROM docker.io/gradle:7.6-jdk17 AS build
 
 COPY . .
 
 RUN gradle build
 
-FROM alpine:3 AS run
+FROM docker.io/alpine:3 AS run
 ENV JAVA_HOME=/opt/java/openjdk
 ENV PATH "${JAVA_HOME}/bin:${PATH}"
 COPY --from=jre-build /javaruntime $JAVA_HOME
