@@ -6,6 +6,9 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: latest
 
+# If set, overrides SPRING_DATASOURCE_URL from secret
+springDatasourceUrl: ""
+
 # secret should have these values analogous to application.yml-default:
 # - datasource-url
 # - register-secret
