@@ -50,8 +50,8 @@ It will start on port 8080 by default.
 ## Deployment
 
 ```bash
-docker build -t images.lit.plus/tingo:latest .
-docker push images.lit.plus/tingo:latest
+docker build -t registry.lit.plus/tingo:latest .
+docker push registry.lit.plus/tingo:latest
 helm install tingo charts/tingo --namespace=tingo-sic
 ```
 

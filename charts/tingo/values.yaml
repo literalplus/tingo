@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: images.lit.plus/tingo
+  repository: registry.lit.plus/tingo
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: latest

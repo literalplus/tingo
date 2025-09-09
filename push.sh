@@ -7,7 +7,7 @@ set -o xtrace
 # IMPORTANT: For this to work, you need to
 #   pacman -Syu qemu-user-static qemu-user-static-binfmt
 
-BASE="images.lit.plus"
+BASE="registry.lit.plus"
 
 function build_and_push () {
     if podman manifest exists $1; then
