@@ -1,4 +1,4 @@
-FROM docker.io/eclipse-temurin:21-jdk-alpine as jre-build
+FROM docker.io/eclipse-temurin:27-jdk-alpine as jre-build
 
 # Create a custom Java runtime
 # https://github.com/adoptium/containers/issues/80
