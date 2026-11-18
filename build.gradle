@@ -42,7 +42,7 @@ dependencies {
     implementation group: 'org.postgresql', name: 'postgresql'
     implementation group: 'org.flywaydb', name: 'flyway-core', version: '8.2.1'
 
-    implementation group: 'org.webjars', name: 'jquery', version: '2.1.4'
+    implementation group: 'org.webjars', name: 'jquery', version: '2.2.4'
     implementation group: 'org.webjars', name: 'angular-ui-bootstrap', version: '1.1.1-1'
     implementation group: 'org.webjars', name: 'angular-ui-router', version: '0.2.17'
     implementation group: 'org.webjars', name: 'bootswatch-paper', version: '3.3.5+4'
