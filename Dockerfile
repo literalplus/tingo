@@ -22,7 +22,7 @@ RUN $JAVA_HOME/bin/jlink \
          --compress=2 \
          --output /javaruntime
 
-FROM docker.io/gradle:7.6-jdk17 AS build
+FROM docker.io/gradle:9.9-jdk17 AS build
 
 COPY . .
 
