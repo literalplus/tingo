@@ -8,7 +8,7 @@
     "copy-fonts": "mkdir -p build/resources/generated/static/fonts && cp node_modules/bootstrap-less/fonts/** build/resources/generated/static/fonts/"
   },
   "devDependencies": {
-    "bootstrap-less": "3.3.6",
+    "bootstrap-less": "3.3.8",
     "bootswatch-less": "3.3.4"
   },
   "dependencies": {
