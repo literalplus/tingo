@@ -40,7 +40,7 @@ dependencies {
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.6.0'
 
     implementation group: 'org.postgresql', name: 'postgresql'
-    implementation group: 'org.flywaydb', name: 'flyway-core', version: '8.2.1'
+    implementation group: 'org.flywaydb', name: 'flyway-core', version: '8.5.13'
 
     implementation group: 'org.webjars', name: 'jquery', version: '2.1.4'
     implementation group: 'org.webjars', name: 'angular-ui-bootstrap', version: '1.1.1-1'
